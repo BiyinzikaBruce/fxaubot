@@ -1,0 +1,429 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Enums ─────────────────────────────────────────────────────────────────────
+
+enum Role {
+  admin
+  mentor
+  trader
+  student
+}
+
+enum Plan {
+  none
+  basic
+  premium
+}
+
+enum PlanBilling {
+  monthly
+  yearly
+}
+
+enum Exchange {
+  binance
+  bybit
+  okx
+  coinbase
+  manual
+}
+
+enum TradeSide {
+  long
+  short
+}
+
+enum SignalType {
+  buy
+  sell
+  neutral
+}
+
+enum SubscriptionStatus {
+  pending
+  active
+  expired
+  rejected
+}
+
+enum PaymentNetwork {
+  trc20
+  erc20
+}
+
+enum MentorInviteStatus {
+  pending
+  active
+  revoked
+}
+
+enum NotificationType {
+  bot_trade
+  signal_triggered
+  copy_trade_fired
+  subscription_activated
+  subscription_expiring
+  mentor_feedback
+}
+
+// ── Models ────────────────────────────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  name           String
+  email          String    @unique
+  emailVerified  Boolean   @default(false)
+  passwordHash   String?
+  role           Role      @default(trader)
+  plan           Plan      @default(none)
+  planBilling    PlanBilling?
+  planExpiresAt  DateTime?
+  avatarUrl      String?
+  image          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts          Account[]
+  sessions          Session[]
+  tradingAccounts   TradingAccount[]
+  exchangeConnections ExchangeConnection[]
+  trades            Trade[]
+  botConfigs        BotConfig[]
+  playbooks         Playbook[]
+  subscriptions     Subscription[]
+  notifications     Notification[]
+  courseProgress    CourseProgress[]
+  sentMentorInvites     MentorInvite[] @relation("MentorInviteTrader")
+  receivedMentorInvites MentorInvite[] @relation("MentorInviteMentor")
+  masterGroups      CopyTradeGroup[] @relation("CopyTradeGroupMaster")
+  copyMemberships   CopyTradeMember[]
+  backtestSessions  BacktestSession[]
+  authoredCourses   Course[]
+
+  @@map("users")
+}
+
+// Better Auth required models
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("accounts")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+model TradingAccount {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  exchange  Exchange @default(manual)
+  balance   Float    @default(0)
+  currency  String   @default("USDT")
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trades     Trade[]
+  botConfigs BotConfig[]
+
+  @@map("trading_accounts")
+}
+
+model ExchangeConnection {
+  id          String   @id @default(cuid())
+  userId      String
+  exchange    Exchange
+  apiKey      String   // AES-256 encrypted
+  apiSecret   String   // AES-256 encrypted
+  permissions String[] @default([])
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("exchange_connections")
+}
+
+model Trade {
+  id            String    @id @default(cuid())
+  accountId     String
+  userId        String
+  symbol        String
+  side          TradeSide
+  entryPrice    Float
+  exitPrice     Float?
+  quantity      Float
+  grossPnl      Float?
+  netPnl        Float?
+  fees          Float     @default(0)
+  mae           Float?    // Max Adverse Excursion
+  mfe           Float?    // Max Favorable Excursion
+  entryAt       DateTime
+  exitAt        DateTime?
+  duration      Int?      // seconds
+  tags          String[]  @default([])
+  playbookId    String?
+  notes         String?
+  rating        Int?      // 1-5
+  screenshotUrl String?
+  isBotTrade    Boolean   @default(false)
+  isReplay      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  account  TradingAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playbook Playbook?      @relation(fields: [playbookId], references: [id])
+
+  @@map("trades")
+}
+
+model BotConfig {
+  id              String   @id @default(cuid())
+  userId          String
+  accountId       String
+  name            String
+  exchange        Exchange
+  symbol          String
+  timeframe       String
+  strategy        Json     // indicator config
+  positionSizePct Float    @default(1)
+  stopLossPct     Float    @default(2)
+  takeProfitPct   Float    @default(4)
+  isActive        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account  TradingAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  signals  BotSignal[]
+
+  @@map("bot_configs")
+}
+
+model BotSignal {
+  id              String     @id @default(cuid())
+  botConfigId     String
+  symbol          String
+  timeframe       String
+  signalType      SignalType
+  indicatorValues Json
+  triggeredAt     DateTime   @default(now())
+  acted           Boolean    @default(false)
+
+  botConfig BotConfig @relation(fields: [botConfigId], references: [id], onDelete: Cascade)
+
+  @@map("bot_signals")
+}
+
+model CopyTradeGroup {
+  id           String   @id @default(cuid())
+  masterId     String
+  name         String
+  isPublic     Boolean  @default(false)
+  maxFollowers Int      @default(10)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  master  User              @relation("CopyTradeGroupMaster", fields: [masterId], references: [id], onDelete: Cascade)
+  members CopyTradeMember[]
+
+  @@map("copy_trade_groups")
+}
+
+model CopyTradeMember {
+  id            String   @id @default(cuid())
+  groupId       String
+  followerId    String
+  allocationPct Float    @default(10)
+  isActive      Boolean  @default(true)
+  joinedAt      DateTime @default(now())
+
+  group    CopyTradeGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  follower User           @relation(fields: [followerId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, followerId])
+  @@map("copy_trade_members")
+}
+
+model BacktestSession {
+  id             String   @id @default(cuid())
+  userId         String
+  name           String
+  exchange       Exchange
+  symbol         String
+  timeframe      String
+  startDate      DateTime
+  endDate        DateTime
+  strategyConfig Json
+  results        Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("backtest_sessions")
+}
+
+model Playbook {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String
+  description     String?
+  rules           String[] @default([])
+  setupCriteria   String?
+  entryConditions String?
+  exitConditions  String?
+  riskParams      Json?
+  isShared        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trades Trade[]
+
+  @@map("playbooks")
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  authorId    String
+  title       String
+  description String?
+  thumbnailUrl String?
+  isPublished Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author   User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  lessons  Lesson[]
+  progress CourseProgress[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id        String   @id @default(cuid())
+  courseId  String
+  title     String
+  content   String?
+  videoUrl  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("lessons")
+}
+
+model CourseProgress {
+  id               String    @id @default(cuid())
+  userId           String
+  courseId         String
+  completedLessons String[]  @default([])
+  completedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("course_progress")
+}
+
+model MentorInvite {
+  id        String             @id @default(cuid())
+  traderId  String
+  mentorId  String
+  status    MentorInviteStatus @default(pending)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  trader User @relation("MentorInviteTrader", fields: [traderId], references: [id], onDelete: Cascade)
+  mentor User @relation("MentorInviteMentor", fields: [mentorId], references: [id], onDelete: Cascade)
+
+  @@unique([traderId, mentorId])
+  @@map("mentor_invites")
+}
+
+model Subscription {
+  id         String             @id @default(cuid())
+  userId     String
+  plan       Plan
+  billing    PlanBilling
+  amountUSDT Float
+  network    PaymentNetwork
+  txHash     String
+  status     SubscriptionStatus @default(pending)
+  verifiedAt DateTime?
+  expiresAt  DateTime?
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
