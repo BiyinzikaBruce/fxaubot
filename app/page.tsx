@@ -380,31 +380,210 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ══ TECHNOLOGY SECTION ════════════════════════════════════════════════ */}
-      <section style={{ ...sectionPad, background: "#0D0F16" }}>
+      {/* ══ TRADE ANALYSIS ════════════════════════════════════════════════════ */}
+      <section style={{ ...sectionPad, background: "#0D0F16", position: "relative", overflow: "hidden" }}>
+        {/* Large faded background number */}
+        <div style={{ position: "absolute", left: "-1rem", top: "50%", transform: "translateY(-50%)", fontSize: "clamp(8rem,18vw,16rem)", fontWeight: 900, color: "rgba(79,142,247,0.04)", fontFamily: "var(--font-space-grotesk,sans-serif)", lineHeight: 1, userSelect: "none", pointerEvents: "none", letterSpacing: "-0.05em" }}>2</div>
+
         <div style={container}>
           {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#4F8EF7", marginBottom: "1rem" }}>CORE TECHNOLOGY</div>
-            <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", margin: "0 0 1rem" }}>
-              Not random signals.<br /><span style={gradText}>Real AI analysis.</span>
+          <div style={{ marginBottom: "2.5rem" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#4F8EF7", marginBottom: "1rem" }}>TRADE ANALYSIS</div>
+            <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2rem,5vw,3.2rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.02em", margin: "0 0 1rem" }}>
+              Analyze your trading <span style={gradText}>stats</span>
             </h2>
-            <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 520, margin: "0 auto" }}>
-              The FXAU engine doesn&apos;t guess. It uses rules-based automation layered with AI-powered market analysis to detect genuine high-probability opportunities.
+            <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 540, margin: 0 }}>
+              Take a moment to understand what mistakes you made, if you risked more than planned, and review detailed trade-specific stats to sharpen your edge.
             </p>
           </div>
-          {/* Cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem" }}>
-            {TECH_CARDS.map(card => (
-              <div key={card.title} style={{ padding: "2rem", borderRadius: 16, background: "#111318", border: "1px solid rgba(255,255,255,0.07)", transition: "border-color 0.2s, transform 0.2s" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(79,142,247,0.3)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)" }}
-                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)" }}
-              >
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(79,142,247,0.1)", border: "1px solid rgba(79,142,247,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginBottom: "1.25rem" }}>{card.icon}</div>
-                <h3 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: 18, fontWeight: 700, marginBottom: "0.75rem", color: "#F0F2F7" }}>{card.title}</h3>
-                <p style={{ color: "#8B93A8", fontSize: 14, lineHeight: 1.7, margin: 0 }}>{card.desc}</p>
+
+          {/* App window mockup */}
+          <div style={{ borderRadius: 16, border: "1px solid rgba(79,142,247,0.18)", background: "#111318", overflow: "hidden", boxShadow: "0 0 80px rgba(79,142,247,0.08), 0 40px 100px rgba(0,0,0,0.6)" }}>
+            {/* Window chrome bar */}
+            <div style={{ padding: "0.7rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8, background: "#0A0B10" }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#FF5F57" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#FFBD2E" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28C840" }} />
+              <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 6, padding: "3px 20px", fontSize: 11, color: "#525A6E" }}>FXAU — Trade Analysis · XAUUSD Long</div>
               </div>
-            ))}
+            </div>
+
+            {/* App body: sidebar + main */}
+            <div style={{ display: "flex", height: 500 }}>
+              {/* Sidebar icons */}
+              <div style={{ width: 54, borderRight: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", gap: "1.1rem", background: "rgba(0,0,0,0.25)", flexShrink: 0 }}>
+                {[
+                  { icon: "⊞", active: false },
+                  { icon: "✏️", active: true },
+                  { icon: "📊", active: false },
+                  { icon: "🔖", active: false },
+                  { icon: "⚡", active: false },
+                  { icon: "🎓", active: false },
+                ].map((item, i) => (
+                  <div key={i} style={{ width: 34, height: 34, borderRadius: 8, background: item.active ? "rgba(79,142,247,0.15)" : "transparent", border: item.active ? "1px solid rgba(79,142,247,0.35)" : "1px solid transparent", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, cursor: "pointer" }}>{item.icon}</div>
+                ))}
+              </div>
+
+              {/* Main area */}
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+                {/* Trade header bar */}
+                <div style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(79,142,247,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#4F8EF7" }}>XA</div>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ fontSize: 14, fontWeight: 800, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>XAUUSD</span>
+                        <span style={{ padding: "2px 7px", borderRadius: 4, background: "rgba(79,142,247,0.12)", color: "#4F8EF7", fontSize: 10, fontWeight: 700 }}>LONG</span>
+                        <span style={{ padding: "2px 7px", borderRadius: 4, background: "rgba(0,208,132,0.1)", color: "#00D084", fontSize: 10, fontWeight: 700 }}>WIN</span>
+                      </div>
+                      <div style={{ fontSize: 11, color: "#525A6E", marginTop: 1 }}>Sep 01, 2024 · 09:30 AM EST — 1:47 PM EST</div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: "#00D084", fontFamily: "var(--font-space-grotesk,sans-serif)" }}>+$1,247.50</div>
+                    <div style={{ fontSize: 11, color: "#00D084", opacity: 0.8 }}>+3.8R &nbsp;·&nbsp; +2.31%</div>
+                  </div>
+                </div>
+
+                {/* Tabs */}
+                <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 1.25rem", flexShrink: 0 }}>
+                  {["Stats", "Playbook", "Executions", "Attachments"].map((tab, i) => (
+                    <button key={tab} style={{ padding: "0.7rem 1rem", fontSize: 13, fontWeight: i === 0 ? 700 : 500, color: i === 0 ? "#F0F2F7" : "#525A6E", background: "transparent", border: "none", borderBottom: i === 0 ? "2px solid #4F8EF7" : "2px solid transparent", cursor: "pointer", marginBottom: -1 }}>{tab}</button>
+                  ))}
+                </div>
+
+                {/* Content: left stats + right chart */}
+                <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+                  {/* Stats panel */}
+                  <div style={{ flex: "0 0 48%", borderRight: "1px solid rgba(255,255,255,0.06)", padding: "1rem 1.25rem", overflow: "auto", display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+                    {/* Stats grid */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+                      {[
+                        { label: "Net P&L", val: "+$1,247", color: "#00D084" },
+                        { label: "Win Rate", val: "73%", color: "#4F8EF7" },
+                        { label: "Avg R:R", val: "1:2.4", color: "#F0F2F7" },
+                        { label: "Total Trades", val: "48", color: "#F0F2F7" },
+                        { label: "Best Trade", val: "+$847", color: "#00D084" },
+                        { label: "Profit Factor", val: "2.71", color: "#4F8EF7" },
+                        { label: "Avg Duration", val: "4h 23m", color: "#F0F2F7" },
+                        { label: "Max Drawdown", val: "-$320", color: "#FF4B6E" },
+                        { label: "Sharpe Ratio", val: "1.84", color: "#F0F2F7" },
+                      ].map(s => (
+                        <div key={s.label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 9, padding: "8px 10px" }}>
+                          <div style={{ fontSize: 9, color: "#525A6E", marginBottom: 3, fontWeight: 700, letterSpacing: "0.04em" }}>{s.label}</div>
+                          <div style={{ fontSize: 15, fontWeight: 800, color: s.color, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>{s.val}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Mistakes / risk flags */}
+                    <div style={{ background: "rgba(255,75,110,0.05)", border: "1px solid rgba(255,75,110,0.15)", borderRadius: 10, padding: "10px 12px" }}>
+                      <div style={{ fontSize: 10, color: "#FF4B6E", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 6 }}>⚠ RISK FLAGS</div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        {["Held past target by 12 min", "Position size 0.2% above plan"].map(flag => (
+                          <div key={flag} style={{ fontSize: 11, color: "#8B93A8", display: "flex", alignItems: "center", gap: 6 }}>
+                            <span style={{ color: "#FF4B6E", fontWeight: 700 }}>·</span> {flag}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Trade notes */}
+                    <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 10, padding: "10px 12px" }}>
+                      <div style={{ fontSize: 10, color: "#525A6E", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 5 }}>TRADE NOTES</div>
+                      <div style={{ fontSize: 12, color: "#8B93A8", lineHeight: 1.6 }}>Waited for London session breakout confirmation. Entered on retest of key level at 2312. Managed risk at 1% account size.</div>
+                    </div>
+                  </div>
+
+                  {/* Chart panel */}
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+                    {/* Chart toolbar */}
+                    <div style={{ padding: "0.5rem 0.85rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                      {["1m", "5m", "15m", "1H", "4H"].map((t, i) => (
+                        <span key={t} style={{ padding: "2px 8px", borderRadius: 5, fontSize: 10, fontWeight: 700, background: i === 3 ? "rgba(79,142,247,0.15)" : "transparent", color: i === 3 ? "#4F8EF7" : "#525A6E", border: i === 3 ? "1px solid rgba(79,142,247,0.3)" : "1px solid transparent", cursor: "pointer" }}>{t}</span>
+                      ))}
+                      <span style={{ marginLeft: "auto", fontSize: 10, color: "#525A6E", cursor: "pointer" }}>📐 Indicators</span>
+                    </div>
+
+                    {/* Price info */}
+                    <div style={{ padding: "0.4rem 0.85rem", borderBottom: "1px solid rgba(255,255,255,0.04)", display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 10, color: "#525A6E" }}>O</span><span style={{ fontSize: 10, color: "#F0F2F7", fontWeight: 600 }}>2318.25</span>
+                      <span style={{ fontSize: 10, color: "#525A6E" }}>H</span><span style={{ fontSize: 10, color: "#00D084", fontWeight: 600 }}>2321.80</span>
+                      <span style={{ fontSize: 10, color: "#525A6E" }}>L</span><span style={{ fontSize: 10, color: "#FF4B6E", fontWeight: 600 }}>2315.40</span>
+                      <span style={{ fontSize: 10, color: "#525A6E" }}>C</span><span style={{ fontSize: 10, color: "#F0F2F7", fontWeight: 600 }}>2319.50</span>
+                    </div>
+
+                    {/* Candlestick chart */}
+                    <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+                      <svg viewBox="0 0 380 200" style={{ width: "100%", height: "100%", display: "block" }}>
+                        {/* Grid lines */}
+                        {[40, 80, 120, 160].map(y => (
+                          <line key={y} x1="0" y1={y} x2="380" y2={y} stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+                        ))}
+                        {/* Entry line */}
+                        <line x1="0" y1="138" x2="380" y2="138" stroke="rgba(79,142,247,0.5)" strokeWidth="1" strokeDasharray="5,4" />
+                        <rect x="2" y="130" width="34" height="14" rx="3" fill="rgba(79,142,247,0.15)" />
+                        <text x="6" y="140" fill="#4F8EF7" fontSize="8" fontWeight="700">ENTRY</text>
+                        {/* Exit / TP line */}
+                        <line x1="0" y1="52" x2="380" y2="52" stroke="rgba(0,208,132,0.5)" strokeWidth="1" strokeDasharray="5,4" />
+                        <rect x="2" y="44" width="26" height="14" rx="3" fill="rgba(0,208,132,0.12)" />
+                        <text x="6" y="54" fill="#00D084" fontSize="8" fontWeight="700">EXIT</text>
+                        {/* SL line */}
+                        <line x1="0" y1="172" x2="380" y2="172" stroke="rgba(255,75,110,0.4)" strokeWidth="1" strokeDasharray="3,5" />
+                        <text x="6" y="170" fill="#FF4B6E" fontSize="7">SL</text>
+
+                        {/* Candles — downtrend then strong reversal up */}
+                        {[
+                          // [x, open, close, high, low] — all Y coords (higher Y = lower price)
+                          [20,  155, 162, 150, 168],  // bear
+                          [38,  162, 158, 156, 170],  // bear
+                          [56,  158, 165, 153, 172],  // bear
+                          [74,  165, 170, 160, 178],  // bear
+                          [92,  170, 164, 162, 180],  // bear small
+                          [110, 164, 172, 159, 178],  // bear
+                          [128, 172, 155, 150, 176],  // strong bull reversal
+                          [146, 155, 142, 138, 158],  // bull
+                          [164, 142, 130, 126, 146],  // bull
+                          [182, 130, 118, 114, 134],  // bull
+                          [200, 118, 105, 102, 122],  // bull
+                          [218, 105, 95,  92,  110],  // bull
+                          [236, 95,  80,  76,  98],   // strong bull
+                          [254, 80,  68,  65,  84],   // bull
+                          [272, 68,  72,  65,  76],   // small bear (pause)
+                          [290, 72,  58,  55,  75],   // bull continuation
+                          [308, 58,  48,  44,  62],   // bull
+                          [326, 48,  52,  44,  55],   // small bear
+                          [344, 52,  42,  38,  56],   // bull
+                          [362, 42,  36,  32,  46],   // bull exit zone
+                        ].map(([x, open, close, high, low], i) => {
+                          const bull = close < open
+                          const col = bull ? "#00D084" : "#FF4B6E"
+                          const bodyTop = Math.min(open, close)
+                          const bodyH = Math.max(Math.abs(open - close), 2)
+                          return (
+                            <g key={i}>
+                              <line x1={x + 6} y1={high} x2={x + 6} y2={low} stroke={col} strokeWidth="1.5" />
+                              <rect x={x} y={bodyTop} width="12" height={bodyH} fill={col} fillOpacity={bull ? 1 : 0.7} rx="1" />
+                            </g>
+                          )
+                        })}
+
+                        {/* Entry arrow */}
+                        <polygon points="118,148 126,138 134,148" fill="#4F8EF7" opacity="0.9" />
+                        {/* Exit arrow */}
+                        <polygon points="354,62 362,52 370,62" fill="#00D084" opacity="0.9" />
+
+                        {/* Price labels right side */}
+                        <text x="368" y="56" fill="#00D084" fontSize="7" fontWeight="700">2321</text>
+                        <text x="368" y="140" fill="#4F8EF7" fontSize="7" fontWeight="700">2312</text>
+                        <text x="368" y="174" fill="#FF4B6E" fontSize="7" fontWeight="700">2308</text>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
