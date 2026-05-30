@@ -123,6 +123,7 @@ export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [pnl, setPnl] = useState(0)
   const [chartKey, setChartKey] = useState(0)
+  const [journalKey, setJournalKey] = useState(0)
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -152,6 +153,7 @@ export default function LandingPage() {
     animate()
     const loop = setInterval(() => {
       setChartKey((k) => k + 1)
+      setJournalKey((k) => k + 1)
       animate()
     }, 8000)
     return () => clearInterval(loop)
@@ -408,28 +410,122 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right: Text */}
-          <div style={{ flex: "1 1 460px", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#4F8EF7" }}>MOBILE & WEB PLATFORM</div>
-            <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", margin: 0 }}>
-              Trade from<br /><span style={gradText}>your pocket</span>
-            </h2>
-            <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, margin: 0 }}>
-              The FXAU platform runs natively on web, iOS, and Android — keeping your bots, journal, and copy trades in sync wherever you are. No desktop required.
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {PLATFORM_FEATURES.map(f => (
-                <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                  <div style={{ width: 22, height: 22, borderRadius: 6, background: "rgba(79,142,247,0.12)", border: "1px solid rgba(79,142,247,0.25)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
-                    <span style={{ color: "#4F8EF7", fontSize: 11, fontWeight: 800 }}>✓</span>
-                  </div>
-                  <span style={{ fontSize: 15, color: "#8B93A8", lineHeight: 1.5 }}>{f}</span>
+          {/* Right: Desktop mockup + text */}
+          <div style={{ flex: "1 1 560px", display: "flex", flexDirection: "column", gap: "2rem" }}>
+
+            {/* ── Animated desktop dashboard ── */}
+            <div style={{ borderRadius: 14, border: "1px solid rgba(79,142,247,0.18)", background: "#111318", overflow: "hidden", boxShadow: "0 0 50px rgba(79,142,247,0.1), 0 20px 60px rgba(0,0,0,0.6)" }}>
+              {/* Browser chrome */}
+              <div style={{ padding: "0.6rem 0.85rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8, background: "#0A0B10" }}>
+                <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#FF5F57" }} />
+                <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#FFBD2E" }} />
+                <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#28C840" }} />
+                <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                  <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 5, padding: "3px 14px", fontSize: 10, color: "#525A6E" }}>fxau.app/dashboard/journal</div>
                 </div>
-              ))}
+                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 4px #00D084" }} />
+                  <span style={{ fontSize: 9, color: "#00D084", fontWeight: 700 }}>LIVE</span>
+                </div>
+              </div>
+
+              {/* App body */}
+              <div style={{ display: "flex", height: 300 }}>
+                {/* Mini sidebar */}
+                <div style={{ width: 42, borderRight: "1px solid rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "0.75rem", gap: "1rem", background: "rgba(0,0,0,0.2)", flexShrink: 0 }}>
+                  {["⊞", "✏️", "📊", "🔖", "⚡"].map((ic, i) => (
+                    <div key={i} style={{ width: 28, height: 28, borderRadius: 6, background: i === 1 ? "rgba(79,142,247,0.15)" : "transparent", border: i === 1 ? "1px solid rgba(79,142,247,0.3)" : "none", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>{ic}</div>
+                  ))}
+                </div>
+
+                {/* Main content */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                  {/* Top stats bar */}
+                  <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "1.5rem" }}>
+                    {[
+                      { label: "Total P&L", val: "+$1,274", color: "#00D084" },
+                      { label: "Win Rate", val: "73%", color: "#4F8EF7" },
+                      { label: "Trades", val: "48", color: "#F0F2F7" },
+                      { label: "Profit Factor", val: "2.71", color: "#4F8EF7" },
+                    ].map(s => (
+                      <div key={s.label}>
+                        <div style={{ fontSize: 9, color: "#525A6E", fontWeight: 600, letterSpacing: "0.04em" }}>{s.label}</div>
+                        <div style={{ fontSize: 13, fontWeight: 800, color: s.color, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>{s.val}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Journal table */}
+                  <div style={{ flex: 1, overflow: "hidden" }}>
+                    {/* Table header */}
+                    <div style={{ display: "grid", gridTemplateColumns: "90px 50px 70px 1fr 60px 60px 48px", padding: "0.4rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                      {["Symbol", "Side", "Date", "Notes", "P&L", "R", "Result"].map(h => (
+                        <span key={h} style={{ fontSize: 9, fontWeight: 700, color: "#525A6E", letterSpacing: "0.06em" }}>{h}</span>
+                      ))}
+                    </div>
+
+                    {/* Animated journal rows */}
+                    {[
+                      { sym: "XAUUSD", side: "LONG",  date: "Sep 03", note: "London breakout retest",  pnl: "+$341", r: "+2.1R", win: true },
+                      { sym: "BTCUSD", side: "LONG",  date: "Sep 02", note: "Support bounce, tight SL", pnl: "+$512", r: "+3.2R", win: true },
+                      { sym: "GBPUSD", side: "SHORT", date: "Sep 02", note: "Resistance rejection",    pnl: "-$89",  r: "-0.6R", win: false },
+                      { sym: "EURUSD", side: "SHORT", date: "Sep 01", note: "News candle fade",        pnl: "+$127", r: "+0.9R", win: true },
+                      { sym: "XAUUSD", side: "LONG",  date: "Sep 01", note: "Asian session breakout",  pnl: "+$284", r: "+1.8R", win: true },
+                    ].map((row, i) => (
+                      <div
+                        key={`${journalKey}-${i}`}
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "90px 50px 70px 1fr 60px 60px 48px",
+                          padding: "0.45rem 1rem",
+                          borderBottom: "1px solid rgba(255,255,255,0.03)",
+                          alignItems: "center",
+                          opacity: 0,
+                          animation: `slideInRow 0.35s ease ${i * 0.18}s forwards`,
+                          background: i === 0 ? "rgba(79,142,247,0.04)" : "transparent",
+                        }}
+                      >
+                        <span style={{ fontSize: 11, fontWeight: 700, color: "#F0F2F7" }}>{row.sym}</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: row.side === "LONG" ? "#4F8EF7" : "#7B5CF0" }}>{row.side}</span>
+                        <span style={{ fontSize: 10, color: "#525A6E" }}>{row.date}</span>
+                        <span style={{ fontSize: 10, color: "#8B93A8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{row.note}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: row.win ? "#00D084" : "#FF4B6E" }}>{row.pnl}</span>
+                        <span style={{ fontSize: 10, color: row.win ? "#00D084" : "#FF4B6E", opacity: 0.8 }}>{row.r}</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 5px", borderRadius: 4, background: row.win ? "rgba(0,208,132,0.12)" : "rgba(255,75,110,0.12)", color: row.win ? "#00D084" : "#FF4B6E", textAlign: "center" }}>{row.win ? "WIN" : "LOSS"}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Bottom bar */}
+                  <div style={{ padding: "0.5rem 1rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(79,142,247,0.03)" }}>
+                    <span style={{ fontSize: 10, color: "#525A6E" }}>Showing 5 of 48 trades</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 4px #00D084" }} />
+                      <span style={{ fontSize: 10, color: "#00D084", fontWeight: 600 }}>Auto-sync active</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <Link href="/register" style={{ alignSelf: "flex-start", padding: "12px 28px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 4px 18px rgba(79,142,247,0.3)", letterSpacing: "0.04em", marginTop: "0.5rem" }}>
-              START FREE TRIAL
-            </Link>
+
+            {/* ── Text content below mockup ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#4F8EF7" }}>MOBILE & WEB PLATFORM</div>
+              <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(1.6rem,3vw,2.2rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", margin: 0 }}>
+                Trade from <span style={gradText}>anywhere</span>
+              </h2>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 24px" }}>
+                {PLATFORM_FEATURES.map(f => (
+                  <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ color: "#4F8EF7", fontWeight: 800, fontSize: 13 }}>✓</span>
+                    <span style={{ fontSize: 14, color: "#8B93A8" }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/register" style={{ alignSelf: "flex-start", padding: "11px 26px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 4px 18px rgba(79,142,247,0.3)", letterSpacing: "0.04em" }}>
+                START FREE TRIAL
+              </Link>
+            </div>
           </div>
         </div>
       </section>
