@@ -430,55 +430,129 @@ export default function LandingPage() {
       {/* ══ PLATFORM SECTION ═════════════════════════════════════════════════ */}
       <section id="features" style={{ ...sectionPad }}>
         <div style={{ ...container, display: "flex", alignItems: "center", gap: "5rem" }}>
-          {/* Left: Phone mockup */}
-          <div style={{ flex: "1 1 380px", display: "flex", justifyContent: "center" }}>
-            <div style={{ position: "relative", width: 260 }}>
-              {/* Phone frame */}
-              <div style={{ width: 260, borderRadius: 36, border: "2px solid rgba(79,142,247,0.25)", background: "linear-gradient(160deg,#111318,#0D0F16)", boxShadow: "0 0 50px rgba(79,142,247,0.1), 0 30px 80px rgba(0,0,0,0.7)", overflow: "hidden", padding: "1.5rem 1rem" }}>
-                {/* Status bar */}
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", padding: "0 4px" }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: "#525A6E" }}>9:41</span>
-                  <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                    <div style={{ width: 14, height: 8, borderRadius: 2, border: "1px solid #525A6E", position: "relative" }}>
-                      <div style={{ position: "absolute", left: 1, top: 1, bottom: 1, width: "80%", borderRadius: 1, background: "#00D084" }} />
-                    </div>
+          {/* Left: Big animated phone — live portfolio */}
+          <div style={{ flex: "0 0 340px", display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
+            <div style={{ position: "relative", width: 340 }}>
+              {/* Glow */}
+              <div style={{ position: "absolute", inset: "-40px", borderRadius: 80, background: "radial-gradient(ellipse at 50% 40%, rgba(79,142,247,0.13) 0%, transparent 70%)", zIndex: -1 }} />
+
+              {/* Phone shell */}
+              <div style={{ width: 340, borderRadius: 50, border: "2px solid rgba(79,142,247,0.3)", background: "linear-gradient(160deg,#131620,#0A0B10)", boxShadow: "0 0 70px rgba(79,142,247,0.15), 0 50px 120px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.07)", overflow: "hidden" }}>
+
+                {/* Dynamic island */}
+                <div style={{ display: "flex", justifyContent: "center", padding: "14px 0 6px" }}>
+                  <div style={{ width: 110, height: 30, borderRadius: 15, background: "#000", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#1c1c1c", border: "1.5px solid #2a2a2a" }} />
+                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#2a2a2a" }} />
                   </div>
                 </div>
-                {/* App header */}
-                <div style={{ fontSize: 15, fontWeight: 800, fontFamily: "var(--font-space-grotesk,sans-serif)", marginBottom: "0.75rem", ...gradText }}>FXAU Mobile</div>
-                {/* Mini chart */}
-                <svg viewBox="0 0 220 60" style={{ width: "100%", height: 60, display: "block", marginBottom: "0.75rem" }}>
-                  <defs>
-                    <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#4F8EF7" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#4F8EF7" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M0,50 C30,45 50,35 75,30 C100,25 115,38 140,28 C165,18 185,10 220,5 L220,60 L0,60 Z" fill="url(#mg)" />
-                  <path d="M0,50 C30,45 50,35 75,30 C100,25 115,38 140,28 C165,18 185,10 220,5" fill="none" stroke="#4F8EF7" strokeWidth="2" />
-                </svg>
-                {/* Stats row */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: "0.75rem" }}>
-                  {[{ label: "Today P&L", val: "+$284", color: "#00D084" }, { label: "Win Rate", val: "73%", color: "#4F8EF7" }].map(s => (
-                    <div key={s.label} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "8px 10px", border: "1px solid rgba(255,255,255,0.06)" }}>
-                      <div style={{ fontSize: 10, color: "#525A6E", marginBottom: 3 }}>{s.label}</div>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: s.color }}>{s.val}</div>
+
+                <div style={{ padding: "0 1.35rem 1.75rem" }}>
+                  {/* Status bar */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#F0F2F7" }}>9:41</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <div style={{ display: "flex", gap: 1.5, alignItems: "flex-end" }}>
+                        {[7, 10, 13, 16].map((h, i) => (
+                          <div key={i} style={{ width: 3, height: h, borderRadius: 1.5, background: i < 3 ? "#F0F2F7" : "rgba(255,255,255,0.25)" }} />
+                        ))}
+                      </div>
+                      <div style={{ width: 24, height: 12, borderRadius: 3, border: "1.5px solid rgba(255,255,255,0.4)", position: "relative", marginLeft: 2 }}>
+                        <div style={{ position: "absolute", left: 2, top: 2, bottom: 2, width: "78%", borderRadius: 1, background: "#00D084" }} />
+                        <div style={{ position: "absolute", right: -4, top: "50%", transform: "translateY(-50%)", width: 3, height: 6, borderRadius: "0 1px 1px 0", background: "rgba(255,255,255,0.3)" }} />
+                      </div>
                     </div>
-                  ))}
-                </div>
-                {/* Bot toggle */}
-                <div style={{ background: "rgba(79,142,247,0.08)", borderRadius: 12, padding: "10px 12px", border: "1px solid rgba(79,142,247,0.2)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#4F8EF7" }}>AUTO TRADE</div>
-                    <div style={{ fontSize: 10, color: "#525A6E", marginTop: 2 }}>3 bots running</div>
                   </div>
-                  <div style={{ width: 36, height: 20, borderRadius: 10, background: grad, position: "relative" }}>
-                    <div style={{ position: "absolute", top: 2, right: 2, width: 16, height: 16, borderRadius: "50%", background: "#fff" }} />
+
+                  {/* App header */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                      <div style={{ width: 30, height: 30, borderRadius: 9, background: grad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#fff" }}>FX</div>
+                      <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "var(--font-space-grotesk,sans-serif)", ...gradText }}>FXAU</span>
+                    </div>
+                    <div style={{ position: "relative" }}>
+                      <div style={{ width: 34, height: 34, borderRadius: 10, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>🔔</div>
+                      <div style={{ position: "absolute", top: -3, right: -3, width: 10, height: 10, borderRadius: "50%", background: "#FF4B6E", border: "1.5px solid #0A0B10", animation: "livePulse 2s ease-in-out infinite" }} />
+                    </div>
+                  </div>
+
+                  {/* Portfolio value — animated counter */}
+                  <div style={{ marginBottom: "1.1rem" }}>
+                    <div style={{ fontSize: 10, color: "#525A6E", fontWeight: 700, letterSpacing: "0.1em", marginBottom: 5 }}>TOTAL PORTFOLIO VALUE</div>
+                    <div style={{ fontSize: 34, fontWeight: 900, fontFamily: "var(--font-space-grotesk,sans-serif)", color: "#F0F2F7", lineHeight: 1, letterSpacing: "-0.02em" }}>
+                      ${pnl.toLocaleString()}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#00D084", display: "flex", alignItems: "center", gap: 3 }}>▲ +18.4%</span>
+                      <span style={{ fontSize: 11, color: "#525A6E" }}>this month</span>
+                      <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 4 }}>
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 5px #00D084", animation: "livePulse 1.5s ease-in-out infinite" }} />
+                        <span style={{ fontSize: 10, color: "#00D084", fontWeight: 700 }}>LIVE</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Animated chart */}
+                  <div style={{ background: "rgba(255,255,255,0.025)", borderRadius: 16, padding: "0.75rem 0.6rem 0.4rem", border: "1px solid rgba(255,255,255,0.05)", marginBottom: "0.9rem" }}>
+                    <div style={{ display: "flex", gap: 5, marginBottom: "0.5rem" }}>
+                      {["1D","1W","1M","3M"].map((t, i) => (
+                        <span key={t} style={{ padding: "2px 9px", borderRadius: 5, fontSize: 10, fontWeight: 700, background: i === 1 ? "rgba(79,142,247,0.18)" : "transparent", color: i === 1 ? "#4F8EF7" : "#525A6E", border: i === 1 ? "1px solid rgba(79,142,247,0.3)" : "1px solid transparent" }}>{t}</span>
+                      ))}
+                    </div>
+                    <svg key={`ph-${chartKey}`} viewBox="0 0 295 75" style={{ width: "100%", height: 75, display: "block" }}>
+                      <defs>
+                        <linearGradient id="pmg" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#4F8EF7" stopOpacity="0.35" />
+                          <stop offset="100%" stopColor="#4F8EF7" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M0,62 C22,57 38,44 60,38 C80,33 96,47 120,36 C144,25 158,14 185,9 C205,5 222,12 248,7 L295,4 L295,75 L0,75 Z" fill="url(#pmg)" style={{ animation: "chartFillIn 0.5s ease 2s both" }} />
+                      <path d="M0,62 C22,57 38,44 60,38 C80,33 96,47 120,36 C144,25 158,14 185,9 C205,5 222,12 248,7 L295,4" fill="none" stroke="#4F8EF7" strokeWidth="2.5" strokeLinecap="round" style={{ strokeDasharray: 480, strokeDashoffset: 480, animation: "chartDraw 2s cubic-bezier(0.4,0,0.2,1) forwards" }} />
+                      <circle cx="295" cy="4" r="4" fill="#4F8EF7" style={{ opacity: 0, animation: "dotPop 0.3s ease 2s forwards" }} />
+                      <circle cx="295" cy="4" r="9" fill="rgba(79,142,247,0.2)" style={{ opacity: 0, animation: "dotPop 0.3s ease 2s forwards" }} />
+                    </svg>
+                  </div>
+
+                  {/* 4 stats — 2×2 grid */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9, marginBottom: "0.9rem" }}>
+                    {[
+                      { label: "Today P&L",   val: "+$284", color: "#00D084", icon: "📈" },
+                      { label: "Win Rate",     val: "73%",   color: "#4F8EF7", icon: "🎯" },
+                      { label: "Open Trades",  val: "3",     color: "#F5A623", icon: "⚡" },
+                      { label: "Bots Active",  val: "3 / 5", color: "#4F8EF7", icon: "🤖" },
+                    ].map(s => (
+                      <div key={s.label} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 13, padding: "11px 12px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                          <span style={{ fontSize: 9, color: "#525A6E", fontWeight: 700, letterSpacing: "0.05em" }}>{s.label}</span>
+                          <span style={{ fontSize: 12 }}>{s.icon}</span>
+                        </div>
+                        <div style={{ fontSize: 20, fontWeight: 900, color: s.color, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>{s.val}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Live bot notification — re-animates every loop */}
+                  <div key={`ntf-${journalKey}`} style={{ background: "rgba(79,142,247,0.07)", borderRadius: 14, padding: "11px 13px", border: "1px solid rgba(79,142,247,0.2)", display: "flex", alignItems: "center", gap: 11, marginBottom: "0.85rem", animation: "slideInRow 0.45s ease forwards" }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 11, background: "rgba(79,142,247,0.15)", border: "1px solid rgba(79,142,247,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>🤖</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#F0F2F7" }}>Bot opened XAUUSD LONG</div>
+                      <div style={{ fontSize: 10, color: "#525A6E", marginTop: 2 }}>Entry: 2,318.40 · SL: 2,310 · TP: 2,330</div>
+                    </div>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4F8EF7", boxShadow: "0 0 6px #4F8EF7", flexShrink: 0, animation: "livePulse 1.5s ease-in-out infinite" }} />
+                  </div>
+
+                  {/* Auto-trade toggle */}
+                  <div style={{ background: "rgba(0,208,132,0.06)", borderRadius: 14, padding: "11px 13px", border: "1px solid rgba(0,208,132,0.2)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#00D084" }}>AUTO TRADE</div>
+                      <div style={{ fontSize: 10, color: "#525A6E", marginTop: 2 }}>3 bots running · 2 signals queued</div>
+                    </div>
+                    <div style={{ width: 46, height: 26, borderRadius: 13, background: grad, position: "relative", boxShadow: "0 0 12px rgba(79,142,247,0.4)", flexShrink: 0 }}>
+                      <div style={{ position: "absolute", top: 3, right: 3, width: 20, height: 20, borderRadius: "50%", background: "#fff", boxShadow: "0 2px 6px rgba(0,0,0,0.35)" }} />
+                    </div>
                   </div>
                 </div>
               </div>
-              {/* Glow */}
-              <div style={{ position: "absolute", inset: "-20px", borderRadius: 50, background: "radial-gradient(ellipse at 50% 50%, rgba(79,142,247,0.08) 0%, transparent 70%)", zIndex: -1 }} />
             </div>
           </div>
 
