@@ -124,6 +124,8 @@ export default function LandingPage() {
   const [pnl, setPnl] = useState(0)
   const [chartKey, setChartKey] = useState(0)
   const [journalKey, setJournalKey] = useState(0)
+  const [scene, setScene] = useState(0)
+  const [sceneProgress, setSceneProgress] = useState(0)
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -157,6 +159,21 @@ export default function LandingPage() {
       animate()
     }, 8000)
     return () => clearInterval(loop)
+  }, [])
+
+  useEffect(() => {
+    const SCENE_DURATION = 4000
+    const SCENES = 3
+    let progress = 0
+    const tick = setInterval(() => {
+      progress += 100 / (SCENE_DURATION / 50)
+      if (progress >= 100) {
+        progress = 0
+        setScene((s) => (s + 1) % SCENES)
+      }
+      setSceneProgress(progress)
+    }, 50)
+    return () => clearInterval(tick)
   }, [])
 
   const proof = SOCIAL_PROOFS[proofIndex]
@@ -247,97 +264,152 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Right: Animated Dashboard */}
-        <div style={{ flex: "1 1 440px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <div style={{ width: "100%", maxWidth: 440, borderRadius: 20, border: "1px solid rgba(79,142,247,0.2)", background: "linear-gradient(145deg,#111318,#0D0F16)", boxShadow: "0 0 80px rgba(79,142,247,0.15), 0 24px 64px rgba(0,0,0,0.7)", overflow: "hidden" }}>
+        {/* Right: Multi-scene product demo */}
+        <div style={{ flex: "1 1 480px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <div style={{ width: "100%", maxWidth: 480, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(79,142,247,0.22)", background: "#0D0F16", boxShadow: "0 0 80px rgba(79,142,247,0.14), 0 32px 80px rgba(0,0,0,0.7)" }}>
 
-            {/* Header — animated P&L counter */}
-            <div style={{ padding: "1.25rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontSize: 11, color: "#525A6E", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 4 }}>LIVE PORTFOLIO</div>
-                <div style={{ fontSize: 26, fontWeight: 800, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>
-                  ${pnl.toLocaleString()}
-                  <span style={{ fontSize: 14, fontWeight: 600, color: "#00D084", marginLeft: 10 }}>+18.4%</span>
+            {/* Browser chrome */}
+            <div style={{ padding: "0.65rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8, background: "#08090E" }}>
+              <div style={{ display: "flex", gap: 5 }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#FF5F57" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#FFBD2E" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28C840" }} />
+              </div>
+              <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 6, padding: "3px 16px", fontSize: 11, color: "#525A6E" }}>
+                  {scene === 0 ? "fxau.app/dashboard/journal" : scene === 1 ? "fxau.app/dashboard/analytics" : "fxau.app/dashboard/bot"}
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 8px #00D084", animation: "livePulse 1.5s ease-in-out infinite" }} />
-                <span style={{ fontSize: 12, color: "#00D084", fontWeight: 700 }}>LIVE</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 5px #00D084", animation: "livePulse 1.5s ease-in-out infinite" }} />
+                <span style={{ fontSize: 10, color: "#00D084", fontWeight: 700 }}>LIVE</span>
               </div>
             </div>
 
-            {/* Timeframe tabs */}
-            <div style={{ padding: "1rem 1.5rem 0" }}>
-              <div style={{ display: "flex", gap: 6, marginBottom: "0.5rem" }}>
-                {["1D", "1W", "1M", "ALL"].map((t, i) => (
-                  <span key={t} style={{ padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: i === 1 ? "rgba(79,142,247,0.15)" : "transparent", color: i === 1 ? "#4F8EF7" : "#525A6E", border: i === 1 ? "1px solid rgba(79,142,247,0.3)" : "1px solid transparent" }}>{t}</span>
-                ))}
-              </div>
-            </div>
+            {/* Scene content */}
+            <div style={{ height: 340, overflow: "hidden", position: "relative" }}>
 
-            {/* Animated chart — resets via key every 8 s */}
-            <svg key={`chart-${chartKey}`} viewBox="0 0 255 100" style={{ width: "100%", height: 115, display: "block" }}>
-              <defs>
-                <linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#4F8EF7" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#4F8EF7" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              {/* Fill fades in after line finishes drawing */}
-              <path
-                d={CHART_PATH}
-                fill="url(#cg2)"
-                style={{ animation: "chartFillIn 0.6s ease-in 2.4s both" }}
-              />
-              {/* Line draws from left to right */}
-              <path
-                d={CHART_LINE}
-                fill="none"
-                stroke="#4F8EF7"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                style={{ strokeDasharray: 420, strokeDashoffset: 420, animation: "chartDraw 2.4s cubic-bezier(0.4,0,0.2,1) forwards" }}
-              />
-              {/* Live dot appears at end */}
-              <circle cx="255" cy="8" r="4" fill="#4F8EF7" style={{ opacity: 0, animation: "dotPop 0.3s ease 2.4s forwards" }} />
-              <circle cx="255" cy="8" r="9" fill="rgba(79,142,247,0.22)" style={{ opacity: 0, animation: "dotPop 0.3s ease 2.4s forwards" }} />
-            </svg>
-
-            {/* Trade rows — slide in one by one */}
-            <div style={{ padding: "0.75rem 1.5rem 1.25rem" }}>
-              <div style={{ fontSize: 11, color: "#525A6E", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.65rem" }}>RECENT TRADES</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {RECENT_TRADES.map((t, i) => (
-                  <div
-                    key={`${t.pair}-${chartKey}`}
-                    style={{
-                      display: "flex", alignItems: "center", justifyContent: "space-between",
-                      padding: "8px 12px", borderRadius: 10,
-                      background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)",
-                      opacity: 0,
-                      animation: `slideInRow 0.4s ease ${2.6 + i * 0.25}s forwards`,
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(79,142,247,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#4F8EF7" }}>{t.pair.slice(0, 2)}</div>
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 600 }}>{t.pair}</div>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: t.side === "BUY" ? "#4F8EF7" : "#7B5CF0", letterSpacing: "0.04em" }}>{t.side}</div>
-                      </div>
+              {/* ── SCENE 0: Trading Journal ── */}
+              <div style={{ position: "absolute", inset: 0, opacity: scene === 0 ? 1 : 0, transition: "opacity 0.5s ease", display: "flex", flexDirection: "column" }}>
+                <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", gap: "1.5rem" }}>
+                  {[{ l: "Total P&L", v: `$${pnl.toLocaleString()}`, c: "#00D084" }, { l: "Win Rate", v: "73%", c: "#4F8EF7" }, { l: "Trades", v: "48", c: "#F0F2F7" }].map(s => (
+                    <div key={s.l}>
+                      <div style={{ fontSize: 9, color: "#525A6E", fontWeight: 600 }}>{s.l}</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: s.c, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>{s.v}</div>
                     </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#00D084" }}>{t.pnl}</div>
-                      <div style={{ fontSize: 10, color: "#00D084", opacity: 0.7 }}>{t.pct}</div>
-                    </div>
+                  ))}
+                </div>
+                <div style={{ padding: "0.4rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.04)", display: "grid", gridTemplateColumns: "80px 46px 1fr 58px 44px", gap: 4 }}>
+                  {["Symbol", "Side", "Notes", "P&L", "R"].map(h => <span key={h} style={{ fontSize: 9, color: "#525A6E", fontWeight: 700, letterSpacing: "0.05em" }}>{h}</span>)}
+                </div>
+                {[
+                  { sym: "XAUUSD", side: "LONG",  note: "London breakout retest",   pnl: "+$341", r: "+2.1R", win: true },
+                  { sym: "BTCUSD", side: "LONG",  note: "Support bounce tight SL",  pnl: "+$512", r: "+3.2R", win: true },
+                  { sym: "GBPUSD", side: "SHORT", note: "Resistance rejection",      pnl: "-$89",  r: "-0.6R", win: false },
+                  { sym: "EURUSD", side: "SHORT", note: "News candle fade",          pnl: "+$127", r: "+0.9R", win: true },
+                  { sym: "XAUUSD", side: "LONG",  note: "Asian session breakout",   pnl: "+$284", r: "+1.8R", win: true },
+                ].map((row, i) => (
+                  <div key={row.sym + i} style={{ display: "grid", gridTemplateColumns: "80px 46px 1fr 58px 44px", padding: "0.5rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.03)", alignItems: "center", background: i === 0 ? "rgba(79,142,247,0.05)" : "transparent", opacity: 0, animation: scene === 0 ? `slideInRow 0.35s ease ${i * 0.15}s forwards` : "none" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700 }}>{row.sym}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: row.side === "LONG" ? "#4F8EF7" : "#7B5CF0" }}>{row.side}</span>
+                    <span style={{ fontSize: 10, color: "#525A6E", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{row.note}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: row.win ? "#00D084" : "#FF4B6E" }}>{row.pnl}</span>
+                    <span style={{ fontSize: 10, color: row.win ? "#00D084" : "#FF4B6E" }}>{row.r}</span>
                   </div>
                 ))}
               </div>
+
+              {/* ── SCENE 1: Chart Analysis ── */}
+              <div style={{ position: "absolute", inset: 0, opacity: scene === 1 ? 1 : 0, transition: "opacity 0.5s ease", display: "flex", flexDirection: "column" }}>
+                <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 14, fontWeight: 800 }}>XAUUSD</span>
+                    <span style={{ padding: "2px 7px", borderRadius: 4, background: "rgba(79,142,247,0.12)", color: "#4F8EF7", fontSize: 10, fontWeight: 700 }}>LONG</span>
+                    <span style={{ padding: "2px 7px", borderRadius: 4, background: "rgba(0,208,132,0.1)", color: "#00D084", fontSize: 10, fontWeight: 700 }}>WIN</span>
+                  </div>
+                  <span style={{ fontSize: 18, fontWeight: 800, color: "#00D084" }}>+$1,247</span>
+                </div>
+                <div style={{ padding: "0.4rem 0.85rem", borderBottom: "1px solid rgba(255,255,255,0.04)", display: "flex", gap: 6 }}>
+                  {["1m", "5m", "15m", "1H", "4H"].map((t, i) => (
+                    <span key={t} style={{ padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 700, background: i === 3 ? "rgba(79,142,247,0.15)" : "transparent", color: i === 3 ? "#4F8EF7" : "#525A6E" }}>{t}</span>
+                  ))}
+                </div>
+                <svg key={`sc1-${scene}`} viewBox="0 0 440 200" style={{ flex: 1, width: "100%", display: "block" }}>
+                  {[50, 100, 150].map(y => <line key={y} x1="0" y1={y} x2="440" y2={y} stroke="rgba(255,255,255,0.04)" strokeWidth="1" />)}
+                  <line x1="0" y1="138" x2="440" y2="138" stroke="rgba(79,142,247,0.45)" strokeWidth="1" strokeDasharray="5,4" />
+                  <text x="8" y="133" fill="#4F8EF7" fontSize="9" fontWeight="700">ENTRY 2312</text>
+                  <line x1="0" y1="55" x2="440" y2="55" stroke="rgba(0,208,132,0.45)" strokeWidth="1" strokeDasharray="5,4" />
+                  <text x="8" y="50" fill="#00D084" fontSize="9" fontWeight="700">EXIT 2321</text>
+                  <line x1="0" y1="172" x2="440" y2="172" stroke="rgba(255,75,110,0.35)" strokeWidth="1" strokeDasharray="3,5" />
+                  <text x="8" y="168" fill="#FF4B6E" fontSize="8">SL 2308</text>
+                  {[
+                    [20,160,168,155,175],[42,168,162,158,174],[64,162,170,157,176],[86,170,175,165,180],
+                    [108,175,168,163,180],[130,168,174,162,178],[152,174,155,148,178],[174,155,142,138,158],
+                    [196,142,130,126,146],[218,130,118,114,134],[240,118,105,102,122],[262,105,95,92,110],
+                    [284,95,80,76,98],[306,80,68,65,84],[328,68,72,64,76],[350,72,58,55,75],
+                    [372,58,48,44,62],[394,48,40,37,52],[416,40,34,30,44],
+                  ].map(([x, open, close, high, low], i) => {
+                    const bull = close < open; const col = bull ? "#00D084" : "#FF4B6E"
+                    return <g key={i}><line x1={x+6} y1={high} x2={x+6} y2={low} stroke={col} strokeWidth="1.5" /><rect x={x} y={Math.min(open,close)} width="12" height={Math.max(Math.abs(open-close),2)} fill={col} fillOpacity={bull?1:0.7} rx="1" /></g>
+                  })}
+                  <polygon points="160,148 168,138 176,148" fill="#4F8EF7" opacity="0.9" />
+                  <polygon points="404,65 412,55 420,65" fill="#00D084" opacity="0.9" />
+                </svg>
+              </div>
+
+              {/* ── SCENE 2: Bot Dashboard ── */}
+              <div style={{ position: "absolute", inset: 0, opacity: scene === 2 ? 1 : 0, transition: "opacity 0.5s ease", padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#F0F2F7" }}>Active Bots</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 5px #00D084" }} />
+                    <span style={{ fontSize: 11, color: "#00D084", fontWeight: 700 }}>3 Running</span>
+                  </div>
+                </div>
+                {[
+                  { name: "XAUUSD Scalper", pair: "XAU/USD", trades: 12, pnl: "+$841", status: "IN TRADE", color: "#4F8EF7" },
+                  { name: "EUR Trend Bot", pair: "EUR/USD", trades: 8, pnl: "+$312", status: "WAITING", color: "#00D084" },
+                  { name: "BTC Breakout", pair: "BTC/USD", trades: 5, pnl: "+$627", status: "IN TRADE", color: "#4F8EF7" },
+                ].map((bot, i) => (
+                  <div key={bot.name} style={{ padding: "0.85rem 1rem", borderRadius: 12, background: "#111318", border: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between", opacity: 0, animation: scene === 2 ? `slideInRow 0.35s ease ${i * 0.15}s forwards` : "none" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(79,142,247,0.1)", border: "1px solid rgba(79,142,247,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🤖</div>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 700 }}>{bot.name}</div>
+                        <div style={{ fontSize: 11, color: "#525A6E" }}>{bot.pair} · {bot.trades} trades</div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#00D084" }}>{bot.pnl}</div>
+                      <div style={{ fontSize: 9, fontWeight: 700, color: bot.color, letterSpacing: "0.06em" }}>{bot.status}</div>
+                    </div>
+                  </div>
+                ))}
+                <div style={{ padding: "0.75rem 1rem", borderRadius: 10, background: "rgba(79,142,247,0.07)", border: "1px solid rgba(79,142,247,0.18)", display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 12, color: "#8B93A8" }}>Combined P&L today</span>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: "#00D084" }}>+$1,780</span>
+                </div>
+              </div>
             </div>
 
-            {/* Bot status bar */}
-            <div style={{ padding: "0.75rem 1.5rem", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8, background: "rgba(79,142,247,0.05)" }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 5px #00D084" }} />
-              <span style={{ fontSize: 12, color: "#8B93A8" }}>3 bots active · next trade in <span style={{ color: "#4F8EF7" }}>~2m</span></span>
+            {/* Video player controls */}
+            <div style={{ padding: "0.6rem 1rem 0.75rem", borderTop: "1px solid rgba(255,255,255,0.05)", background: "#08090E" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "0.5rem" }}>
+                <span style={{ fontSize: 14, color: "#4F8EF7", cursor: "pointer" }}>▶</span>
+                <div style={{ flex: 1, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                  <div style={{ height: "100%", borderRadius: 2, background: "linear-gradient(90deg,#4F8EF7,#7B5CF0)", width: `${(scene * 100 / 3) + sceneProgress / 3}%`, transition: "width 0.05s linear" }} />
+                </div>
+                <span style={{ fontSize: 10, color: "#525A6E", fontFamily: "var(--font-mono,monospace)", whiteSpace: "nowrap" }}>
+                  0:{String(Math.floor((scene * 4) + (sceneProgress / 100 * 4))).padStart(2, "0")} / 0:12
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {["Journal", "Analytics", "Bot Manager"].map((label, i) => (
+                  <div key={label} onClick={() => setScene(i)} style={{ padding: "3px 9px", borderRadius: 5, fontSize: 10, fontWeight: 600, cursor: "pointer", background: scene === i ? "rgba(79,142,247,0.18)" : "rgba(255,255,255,0.04)", color: scene === i ? "#4F8EF7" : "#525A6E", border: `1px solid ${scene === i ? "rgba(79,142,247,0.35)" : "transparent"}`, transition: "all 0.2s" }}>
+                    {label}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
