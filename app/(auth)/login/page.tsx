@@ -52,7 +52,16 @@ export default function LoginPage() {
 
   const handleGoogle = async () => {
     setGoogleLoading(true)
-    await signIn.social({ provider: "google", callbackURL: from })
+    try {
+      const result = await signIn.social({ provider: "google", callbackURL: from })
+      if (result?.error) {
+        setError("Google sign-in failed. Please try email/password instead.")
+        setGoogleLoading(false)
+      }
+    } catch {
+      setError("Google sign-in failed. Please try email/password instead.")
+      setGoogleLoading(false)
+    }
   }
 
   const t = TESTIMONIALS[testimonialIdx]

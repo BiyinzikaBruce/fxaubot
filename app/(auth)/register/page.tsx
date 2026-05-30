@@ -61,7 +61,16 @@ export default function RegisterPage() {
 
   const handleGoogle = async () => {
     setGoogleLoading(true)
-    await signIn.social({ provider: "google", callbackURL: "/dashboard" })
+    try {
+      const result = await signIn.social({ provider: "google", callbackURL: "/dashboard" })
+      if (result?.error) {
+        setError("Google sign-in failed. Please try email/password instead.")
+        setGoogleLoading(false)
+      }
+    } catch {
+      setError("Google sign-in failed. Please try email/password instead.")
+      setGoogleLoading(false)
+    }
   }
 
   return (
