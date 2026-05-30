@@ -81,7 +81,7 @@ const ALL_FEATURES = [
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
-  { label: "Results", href: "#results" },
+  { label: "Results", href: "/results" },
   { label: "Pricing", href: "/pricing" },
   { label: "Education", href: "/learn" },
   { label: "Contact", href: "#contact" },
@@ -296,7 +296,7 @@ export default function LandingPage() {
             <Link href="/register" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 30px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none", boxShadow: "0 6px 24px rgba(79,142,247,0.35)" }}>
               🚀 GET STARTED FREE
             </Link>
-            <Link href="#results" style={{ display: "inline-flex", alignItems: "center", padding: "13px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)", color: "#F0F2F7", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none" }}>
+            <Link href="/results" style={{ display: "inline-flex", alignItems: "center", padding: "13px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)", color: "#F0F2F7", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none" }}>
               VIEW RESULTS
             </Link>
             <a href="https://t.me/fxaubot" target="_blank" rel="noopener noreferrer"
