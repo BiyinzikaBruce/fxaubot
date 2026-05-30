@@ -121,6 +121,8 @@ export default function LandingPage() {
   const [proofIndex, setProofIndex] = useState(0)
   const [proofVisible, setProofVisible] = useState(true)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [pnl, setPnl] = useState(0)
+  const [chartKey, setChartKey] = useState(0)
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -131,6 +133,28 @@ export default function LandingPage() {
       }, 400)
     }, 4000)
     return () => clearInterval(id)
+  }, [])
+
+  useEffect(() => {
+    const TARGET = 24861
+    const DURATION = 2600
+    const animate = () => {
+      setPnl(0)
+      const t0 = Date.now()
+      const tick = () => {
+        const p = Math.min((Date.now() - t0) / DURATION, 1)
+        const eased = 1 - Math.pow(1 - p, 3)
+        setPnl(Math.floor(eased * TARGET))
+        if (p < 1) requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
+    }
+    animate()
+    const loop = setInterval(() => {
+      setChartKey((k) => k + 1)
+      animate()
+    }, 8000)
+    return () => clearInterval(loop)
   }, [])
 
   const proof = SOCIAL_PROOFS[proofIndex]
@@ -221,23 +245,26 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Right: Dashboard mockup */}
+        {/* Right: Animated Dashboard */}
         <div style={{ flex: "1 1 440px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <div style={{ width: "100%", maxWidth: 440, borderRadius: 20, border: "1px solid rgba(79,142,247,0.2)", background: "linear-gradient(145deg,#111318,#0D0F16)", boxShadow: "0 0 60px rgba(79,142,247,0.12), 0 24px 64px rgba(0,0,0,0.6)", overflow: "hidden" }}>
-            {/* Header */}
+          <div style={{ width: "100%", maxWidth: 440, borderRadius: 20, border: "1px solid rgba(79,142,247,0.2)", background: "linear-gradient(145deg,#111318,#0D0F16)", boxShadow: "0 0 80px rgba(79,142,247,0.15), 0 24px 64px rgba(0,0,0,0.7)", overflow: "hidden" }}>
+
+            {/* Header — animated P&L counter */}
             <div style={{ padding: "1.25rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontSize: 11, color: "#525A6E", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 4 }}>LIVE PORTFOLIO</div>
                 <div style={{ fontSize: 26, fontWeight: 800, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>
-                  $24,861 <span style={{ fontSize: 14, fontWeight: 600, color: "#00D084" }}>+18.4%</span>
+                  ${pnl.toLocaleString()}
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "#00D084", marginLeft: 10 }}>+18.4%</span>
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 6px #00D084" }} />
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 8px #00D084", animation: "livePulse 1.5s ease-in-out infinite" }} />
                 <span style={{ fontSize: 12, color: "#00D084", fontWeight: 700 }}>LIVE</span>
               </div>
             </div>
-            {/* Chart */}
+
+            {/* Timeframe tabs */}
             <div style={{ padding: "1rem 1.5rem 0" }}>
               <div style={{ display: "flex", gap: 6, marginBottom: "0.5rem" }}>
                 {["1D", "1W", "1M", "ALL"].map((t, i) => (
@@ -245,24 +272,50 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-            <svg viewBox="0 0 255 100" style={{ width: "100%", height: 110, display: "block" }}>
+
+            {/* Animated chart — resets via key every 8 s */}
+            <svg key={`chart-${chartKey}`} viewBox="0 0 255 100" style={{ width: "100%", height: 115, display: "block" }}>
               <defs>
-                <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#4F8EF7" stopOpacity="0.3" />
+                <linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4F8EF7" stopOpacity="0.35" />
                   <stop offset="100%" stopColor="#4F8EF7" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              <path d={CHART_PATH} fill="url(#cg)" />
-              <path d={CHART_LINE} fill="none" stroke="#4F8EF7" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="255" cy="8" r="4" fill="#4F8EF7" />
-              <circle cx="255" cy="8" r="8" fill="rgba(79,142,247,0.25)" />
+              {/* Fill fades in after line finishes drawing */}
+              <path
+                d={CHART_PATH}
+                fill="url(#cg2)"
+                style={{ animation: "chartFillIn 0.6s ease-in 2.4s both" }}
+              />
+              {/* Line draws from left to right */}
+              <path
+                d={CHART_LINE}
+                fill="none"
+                stroke="#4F8EF7"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                style={{ strokeDasharray: 420, strokeDashoffset: 420, animation: "chartDraw 2.4s cubic-bezier(0.4,0,0.2,1) forwards" }}
+              />
+              {/* Live dot appears at end */}
+              <circle cx="255" cy="8" r="4" fill="#4F8EF7" style={{ opacity: 0, animation: "dotPop 0.3s ease 2.4s forwards" }} />
+              <circle cx="255" cy="8" r="9" fill="rgba(79,142,247,0.22)" style={{ opacity: 0, animation: "dotPop 0.3s ease 2.4s forwards" }} />
             </svg>
-            {/* Trades */}
-            <div style={{ padding: "1rem 1.5rem 1.25rem" }}>
-              <div style={{ fontSize: 11, color: "#525A6E", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.75rem" }}>RECENT TRADES</div>
+
+            {/* Trade rows — slide in one by one */}
+            <div style={{ padding: "0.75rem 1.5rem 1.25rem" }}>
+              <div style={{ fontSize: 11, color: "#525A6E", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.65rem" }}>RECENT TRADES</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {RECENT_TRADES.map(t => (
-                  <div key={t.pair} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                {RECENT_TRADES.map((t, i) => (
+                  <div
+                    key={`${t.pair}-${chartKey}`}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      padding: "8px 12px", borderRadius: 10,
+                      background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)",
+                      opacity: 0,
+                      animation: `slideInRow 0.4s ease ${2.6 + i * 0.25}s forwards`,
+                    }}
+                  >
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(79,142,247,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#4F8EF7" }}>{t.pair.slice(0, 2)}</div>
                       <div>
@@ -278,7 +331,8 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-            {/* Bot bar */}
+
+            {/* Bot status bar */}
             <div style={{ padding: "0.75rem 1.5rem", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8, background: "rgba(79,142,247,0.05)" }}>
               <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#00D084", boxShadow: "0 0 5px #00D084" }} />
               <span style={{ fontSize: 12, color: "#8B93A8" }}>3 bots active · next trade in <span style={{ color: "#4F8EF7" }}>~2m</span></span>
@@ -740,6 +794,22 @@ export default function LandingPage() {
         @keyframes ticker {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
+        }
+        @keyframes chartDraw {
+          from { stroke-dashoffset: 420; }
+          to   { stroke-dashoffset: 0; }
+        }
+        @keyframes chartFillIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes dotPop {
+          from { opacity: 0; transform: scale(0.4); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideInRow {
+          from { opacity: 0; transform: translateX(14px); }
+          to   { opacity: 1; transform: translateX(0); }
         }
       `}</style>
     </div>
