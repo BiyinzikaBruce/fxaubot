@@ -28,6 +28,57 @@ const TICKER_ITEMS = [
   { pair: "USD/CHF", change: "-0.18%", positive: false },
 ]
 
+const ALL_FEATURES = [
+  {
+    icon: "📓",
+    title: "Automated Journaling",
+    desc: "Connect your broker once and every trade is logged automatically — entries, exits, P&L, screenshots, and more.",
+    color: "#4F8EF7",
+  },
+  {
+    icon: "🔬",
+    title: "Backtesting",
+    desc: "Test your strategy against years of historical data before risking a single dollar in live markets.",
+    color: "#7B5CF0",
+  },
+  {
+    icon: "▶️",
+    title: "Trade Replay",
+    desc: "Replay any past trade tick-by-tick to understand exactly what happened and refine your decision-making.",
+    color: "#4F8EF7",
+  },
+  {
+    icon: "🧠",
+    title: "AI Insights",
+    desc: "Get personalised AI analysis of your trading patterns — mistakes, strengths, and actionable improvements.",
+    color: "#7B5CF0",
+  },
+  {
+    icon: "👥",
+    title: "Community",
+    desc: "Join thousands of traders sharing setups, playbooks, and performance reports inside the FXAU community.",
+    color: "#4F8EF7",
+  },
+  {
+    icon: "🏆",
+    title: "Prop Firm Sync",
+    desc: "Automatically sync your prop firm account, track your challenge phase, and stay within all firm rules.",
+    color: "#7B5CF0",
+  },
+  {
+    icon: "📊",
+    title: "Reports",
+    desc: "50+ detailed performance reports — by session, pair, day of week, setup type, and much more.",
+    color: "#4F8EF7",
+  },
+  {
+    icon: "📐",
+    title: "Strategy Tracking",
+    desc: "Build playbooks for every setup, track how each strategy performs over time, and double down on what works.",
+    color: "#7B5CF0",
+  },
+]
+
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
   { label: "Results", href: "#results" },
@@ -427,8 +478,83 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* ══ ALL FEATURES ═════════════════════════════════════════════════════ */}
+      <section id="features" style={{ ...sectionPad, background: "#0D0F16" }}>
+        <div style={container}>
+          {/* Header */}
+          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#4F8EF7", marginBottom: "1rem" }}>EVERYTHING YOU NEED</div>
+            <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.12, letterSpacing: "-0.02em", margin: "0 0 1rem" }}>
+              One platform. <span style={gradText}>Every edge.</span>
+            </h2>
+            <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 500, margin: "0 auto" }}>
+              Everything a serious trader needs — journaling, automation, analysis, and community — built into one seamless platform.
+            </p>
+          </div>
+
+          {/* 4 × 2 feature grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.25rem" }}>
+            {ALL_FEATURES.map((f, i) => (
+              <div
+                key={f.title}
+                style={{
+                  padding: "1.75rem 1.5rem",
+                  borderRadius: 16,
+                  background: "#111318",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.9rem",
+                  transition: "border-color 0.25s, transform 0.25s, box-shadow 0.25s",
+                  cursor: "default",
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLDivElement
+                  el.style.borderColor = `rgba(${i % 2 === 0 ? "79,142,247" : "123,92,240"},0.4)`
+                  el.style.transform = "translateY(-5px)"
+                  el.style.boxShadow = `0 12px 40px rgba(${i % 2 === 0 ? "79,142,247" : "123,92,240"},0.1)`
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLDivElement
+                  el.style.borderColor = "rgba(255,255,255,0.07)"
+                  el.style.transform = "translateY(0)"
+                  el.style.boxShadow = "none"
+                }}
+              >
+                {/* Icon badge */}
+                <div style={{
+                  width: 50, height: 50, borderRadius: 14,
+                  background: `rgba(${i % 2 === 0 ? "79,142,247" : "123,92,240"},0.1)`,
+                  border: `1px solid rgba(${i % 2 === 0 ? "79,142,247" : "123,92,240"},0.2)`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 22, flexShrink: 0,
+                }}>
+                  {f.icon}
+                </div>
+                <div>
+                  <h3 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: 15, fontWeight: 700, color: "#F0F2F7", margin: "0 0 0.5rem" }}>{f.title}</h3>
+                  <p style={{ fontSize: 13, color: "#8B93A8", lineHeight: 1.65, margin: 0 }}>{f.desc}</p>
+                </div>
+                {/* Bottom accent line */}
+                <div style={{ height: 2, borderRadius: 1, background: `linear-gradient(90deg, rgba(${i % 2 === 0 ? "79,142,247" : "123,92,240"},0.5), transparent)`, marginTop: "auto" }} />
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom CTA */}
+          <div style={{ textAlign: "center", marginTop: "3rem", display: "flex", justifyContent: "center", gap: 12 }}>
+            <Link href="/register" style={{ padding: "13px 32px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 6px 24px rgba(79,142,247,0.3)", letterSpacing: "0.04em" }}>
+              Start Free — No Credit Card
+            </Link>
+            <Link href="/pricing" style={{ padding: "13px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.14)", color: "#F0F2F7", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
+              View Pricing
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ══ PLATFORM SECTION ═════════════════════════════════════════════════ */}
-      <section id="features" style={{ ...sectionPad }}>
+      <section style={{ ...sectionPad }}>
         <div style={{ ...container, display: "flex", alignItems: "center", gap: "5rem" }}>
           {/* Left: Big animated phone — live portfolio */}
           <div style={{ flex: "0 0 340px", display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
