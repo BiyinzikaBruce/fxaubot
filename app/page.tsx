@@ -87,7 +87,7 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ]
 
-const HERO_FEATURES = ["Trading Journal", "Bot Automation", "Copy Trading", "Structured Education"]
+const HERO_FEATURES = ["Trading Journal", "Bot Automation", "Copy Trading", "Backtesting", "Trade Replays", "Community", "Structured Education"]
 
 const PLATFORM_FEATURES = [
   "Real-time push notifications on every trade",
@@ -279,7 +279,7 @@ export default function LandingPage() {
 
           {/* Sub */}
           <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 480, margin: 0 }}>
-            FXAU executes precision trades across every market using advanced AI automation. Journal, automate, copy, and learn — all in one platform. Always on.
+            FXAU executes precision trades across every market using advanced AI automation. Journal, automate, copy, Backtesting and learn — all in one platform. Always on.
           </p>
 
           {/* Feature checks */}
