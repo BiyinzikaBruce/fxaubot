@@ -111,7 +111,7 @@ export default function LearnPage() {
         </div>
 
         <h1 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2.6rem,5.5vw,4rem)", fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.03em", marginBottom: "1.25rem", maxWidth: 820, margin: "0 auto 1.25rem" }}>
-          Learn to trade forex.<br /><span style={gradText}>From Uganda. For the world.</span>
+          Learn to trade forex.<br /><span style={gradText}>Connect with experienced traders.</span>
         </h1>
 
         <p style={{ color: "#8B93A8", fontSize: 18, lineHeight: 1.75, maxWidth: 600, margin: "0 auto 2.5rem" }}>
