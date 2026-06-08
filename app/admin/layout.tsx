@@ -1,5 +1,7 @@
 import { Sidebar } from "@/components/layout/sidebar"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = { title: { default: "Admin", template: "%s | Admin | FXAU" } }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
