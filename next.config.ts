@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@prisma/client", "@prisma/adapter-neon", "better-auth", "@better-auth/prisma-adapter"],
+  serverExternalPackages: [
+    "@prisma/client",
+    "@prisma/client-runtime-utils",
+    "@prisma/adapter-neon",
+    "@neondatabase/serverless",
+    "better-auth",
+    "@better-auth/prisma-adapter",
+  ],
 };
 
 export default nextConfig;
