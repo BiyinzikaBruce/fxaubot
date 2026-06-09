@@ -11,7 +11,7 @@ export async function GET() {
     GOOGLE_CLIENT_ID: googleIdSnippet,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? "SET ✓" : "NOT SET ✗",
     DATABASE_URL: process.env.DATABASE_URL ? "SET ✓" : "NOT SET ✗",
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? "NOT SET ✗",
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? "NOT SET ✗ — client will use localhost!",
     NODE_ENV: process.env.NODE_ENV,
   })
 }
