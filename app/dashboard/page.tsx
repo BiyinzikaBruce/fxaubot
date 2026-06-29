@@ -8,6 +8,7 @@ import { StatCard } from "@/components/ui/stat-card"
 import { EquityCurve } from "@/components/dashboard/equity-curve"
 import { CalendarHeatmap } from "@/components/dashboard/calendar-heatmap"
 import { RecentTrades } from "@/components/dashboard/recent-trades"
+import { Mt5AccountsBar } from "@/components/dashboard/mt5-accounts-bar"
 import {
   TrendingUp, Percent, BarChart2, Zap, Trophy, AlertTriangle, Flame, CalendarDays, History,
 } from "lucide-react"
@@ -82,6 +83,8 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader title="Dashboard" breadcrumbs={[{ label: "Dashboard" }]} />
+
+      <Mt5AccountsBar />
 
       {/* KPI stat cards */}
       <motion.div

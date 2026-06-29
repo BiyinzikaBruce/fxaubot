@@ -10,6 +10,16 @@ export type TradingAccount = {
   currency: string
   isDefault: boolean
   createdAt: string
+  broker?: string | null
+  mt5Login?: string | null
+  mt5Server?: string | null
+  mt5Platform?: string | null
+  accountType?: "demo" | "live" | null
+  metaApiAccountId?: string | null
+  connectionStatus?: "connecting" | "connected" | "failed" | "disconnected" | null
+  equity?: number | null
+  lastSyncedAt?: string | null
+  lastError?: string | null
 }
 
 export function useAccounts() {

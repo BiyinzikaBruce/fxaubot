@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     "@neondatabase/serverless",
     "better-auth",
     "@better-auth/prisma-adapter",
+    "metaapi.cloud-sdk",
   ],
 };
 
