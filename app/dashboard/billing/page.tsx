@@ -59,7 +59,7 @@ export default function BillingPage() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
 
-  const currentPlan = session?.user ? (session.user as { plan?: string }).plan ?? "none" : "none"
+  const currentPlan = session?.user?.plan ?? "none"
 
   const amount = selectedPlan
     ? (billing === "yearly" ? PLANS.find((p) => p.id === selectedPlan)?.yearly : PLANS.find((p) => p.id === selectedPlan)?.monthly) ?? 0

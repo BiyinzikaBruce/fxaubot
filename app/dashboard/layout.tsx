@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/layout/sidebar"
+import { UpgradeNudge } from "@/components/dashboard/upgrade-nudge"
 
 export const dynamic = "force-dynamic"
 
@@ -21,6 +22,7 @@ export default function DashboardLayout({
           {children}
         </div>
       </main>
+      <UpgradeNudge />
     </div>
   )
 }
