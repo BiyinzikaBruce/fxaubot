@@ -23,6 +23,7 @@ import {
   LogOut,
   Sun,
   Moon,
+  Sparkle,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
@@ -97,7 +98,13 @@ export function Sidebar({ className }: SidebarProps) {
       )}
     >
       {/* Logo */}
-      <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--color-border-subtle)] shrink-0">
+      <div className="flex items-center gap-3 px-5 h-[76px] border-b border-[var(--color-border-subtle)] shrink-0">
+        <div
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl shadow-[0_4px_16px_rgba(79,142,247,0.35)]"
+          style={{ background: "linear-gradient(135deg, #4F8EF7 0%, #7B5CF0 100%)" }}
+        >
+          <Sparkle className="h-[18px] w-[18px] text-white" fill="white" />
+        </div>
         <AnimatePresence>
           {!collapsed && (
             <motion.span
@@ -105,7 +112,7 @@ export function Sidebar({ className }: SidebarProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.2 }}
-              className="text-xl font-bold font-[var(--font-display)]"
+              className="text-xl font-bold font-[var(--font-display)] tracking-tight"
               style={{
                 background: "linear-gradient(135deg, #4F8EF7 0%, #7B5CF0 100%)",
                 WebkitBackgroundClip: "text",
@@ -131,62 +138,76 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-3 scrollbar-thin">
-        {NAV_SECTIONS.map((section) => (
-          <div key={section.label}>
+      <nav className="flex-1 overflow-y-auto py-4 scrollbar-thin">
+        {NAV_SECTIONS.map((section, sectionIdx) => (
+          <div key={section.label} className={cn(sectionIdx > 0 && "mt-2")}>
             {!collapsed && (
-              <span className="block px-5 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+              <span className="block px-6 pt-6 pb-2 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
                 {section.label}
               </span>
             )}
-            {section.items.map((item) => {
-              const Icon = item.icon
-              const isActive =
-                item.href === "/dashboard"
-                  ? pathname === "/dashboard"
-                  : pathname.startsWith(item.href)
+            <div className="flex flex-col gap-1 px-3">
+              {section.items.map((item) => {
+                const Icon = item.icon
+                const isActive =
+                  item.href === "/dashboard"
+                    ? pathname === "/dashboard"
+                    : pathname.startsWith(item.href)
 
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  title={collapsed ? item.label : undefined}
-                  className={cn(
-                    "flex items-center gap-3 mx-3 my-0.5 px-3 py-2.5 rounded-[10px] transition-colors",
-                    "font-[var(--font-display)] text-[15px] font-medium",
-                    isActive
-                      ? "bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)] border border-[var(--color-border-accent)]"
-                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)]"
-                  )}
-                >
-                  <Icon className="h-[18px] w-[18px] shrink-0" />
-                  <AnimatePresence>
-                    {!collapsed && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                      >
-                        {item.label}
-                      </motion.span>
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    title={collapsed ? item.label : undefined}
+                    className={cn(
+                      "relative flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl transition-all",
+                      "font-[var(--font-display)] text-[15px] font-medium",
+                      isActive
+                        ? "text-[var(--color-accent-primary)] shadow-[0_2px_12px_rgba(79,142,247,0.18)]"
+                        : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)] hover:translate-x-0.5"
                     )}
-                  </AnimatePresence>
-                </Link>
-              )
-            })}
+                    style={
+                      isActive
+                        ? {
+                            background:
+                              "linear-gradient(135deg, rgba(79,142,247,0.16) 0%, rgba(123,92,240,0.10) 100%)",
+                            border: "1px solid var(--color-border-accent)",
+                          }
+                        : undefined
+                    }
+                  >
+                    {isActive && (
+                      <span className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-full bg-gradient-to-b from-[#4F8EF7] to-[#7B5CF0]" />
+                    )}
+                    <Icon className="h-[18px] w-[18px] shrink-0" />
+                    <AnimatePresence>
+                      {!collapsed && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          {item.label}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </Link>
+                )
+              })}
+            </div>
           </div>
         ))}
       </nav>
 
       {/* Bottom: theme toggle + user */}
-      <div className="shrink-0 border-t border-[var(--color-border-subtle)] p-3 space-y-1">
+      <div className="shrink-0 border-t border-[var(--color-border-subtle)] p-4 space-y-2">
         {/* Theme toggle */}
         <button
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           title={resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           className={cn(
-            "flex items-center gap-3 w-full px-3 py-2.5 rounded-[10px] transition-colors",
+            "flex items-center gap-3.5 w-full px-3.5 py-2.5 rounded-xl transition-colors",
             "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)]"
           )}
         >
@@ -213,8 +234,8 @@ export function Sidebar({ className }: SidebarProps) {
         {session?.user && (
           <div
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-[10px]",
-              "border border-[var(--color-border-subtle)]",
+              "flex items-center gap-3 px-3.5 py-3 rounded-xl",
+              "border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)]",
               collapsed ? "justify-center" : ""
             )}
           >

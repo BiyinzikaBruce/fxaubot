@@ -1,5 +1,6 @@
 "use client"
 
+import { motion } from "framer-motion"
 import { useAnalyticsSummary } from "@/hooks/use-analytics"
 import { useTrades } from "@/hooks/use-trades"
 import { PageHeader } from "@/components/layout/page-header"
@@ -8,9 +9,8 @@ import { EquityCurve } from "@/components/dashboard/equity-curve"
 import { CalendarHeatmap } from "@/components/dashboard/calendar-heatmap"
 import { RecentTrades } from "@/components/dashboard/recent-trades"
 import {
-  TrendingUp, Percent, BarChart2, Zap, Trophy, AlertTriangle, Flame,
+  TrendingUp, Percent, BarChart2, Zap, Trophy, AlertTriangle, Flame, CalendarDays, History,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 function fmt(n: number) {
   const sign = n >= 0 ? "+" : ""
@@ -84,23 +84,40 @@ export default function DashboardPage() {
       <PageHeader title="Dashboard" breadcrumbs={[{ label: "Dashboard" }]} />
 
       {/* KPI stat cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+      <motion.div
+        className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4"
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.05 } } }}
+      >
         {statCards.map((card) => (
-          <StatCard
+          <motion.div
             key={card.label}
-            label={card.label}
-            value={card.value ?? <span className={skeleton} />}
-            trend={card.trend}
-            icon={card.icon}
-            sub={card.sub}
-          />
+            variants={{
+              hidden: { opacity: 0, y: 12 },
+              show: { opacity: 1, y: 0 },
+            }}
+          >
+            <StatCard
+              label={card.label}
+              value={card.value ?? <span className={skeleton} />}
+              trend={card.trend}
+              icon={card.icon}
+              sub={card.sub}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Equity Curve + Calendar Heatmap */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-        <div className="lg:col-span-3 rounded-[14px] border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Equity Curve</h2>
+        <div className="lg:col-span-3 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6 transition-shadow hover:shadow-[0_12px_28px_rgba(0,0,0,0.24)]">
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
+              <TrendingUp className="h-4 w-4" />
+            </div>
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Equity Curve</h2>
+          </div>
           {loadingSum ? (
             <div className="h-[220px] animate-pulse rounded bg-[var(--color-bg-elevated)]" />
           ) : (
@@ -108,8 +125,13 @@ export default function DashboardPage() {
           )}
         </div>
 
-        <div className="lg:col-span-2 rounded-[14px] border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Daily P&L Heatmap</h2>
+        <div className="lg:col-span-2 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6 transition-shadow hover:shadow-[0_12px_28px_rgba(0,0,0,0.24)]">
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
+              <CalendarDays className="h-4 w-4" />
+            </div>
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Daily P&L Heatmap</h2>
+          </div>
           {loadingSum ? (
             <div className="h-[220px] animate-pulse rounded bg-[var(--color-bg-elevated)]" />
           ) : (
@@ -119,9 +141,14 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Trades */}
-      <div className="rounded-[14px] border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Recent Trades</h2>
+      <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6 transition-shadow hover:shadow-[0_12px_28px_rgba(0,0,0,0.24)]">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
+              <History className="h-4 w-4" />
+            </div>
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Recent Trades</h2>
+          </div>
           <a
             href="/dashboard/journal"
             className="text-xs text-[var(--color-accent-primary)] hover:underline"
