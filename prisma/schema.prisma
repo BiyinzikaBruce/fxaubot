@@ -19,8 +19,9 @@ enum Role {
 
 enum Plan {
   none
-  basic
-  premium
+  pro
+  ultimate
+  platinum
 }
 
 enum PlanBilling {

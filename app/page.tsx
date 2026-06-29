@@ -10,7 +10,7 @@ const SOCIAL_PROOFS = [
   { city: "London", country: "UK", action: "Joined copy trading" },
   { city: "Dubai", country: "UAE", action: "Upgraded to Pro" },
   { city: "New York", country: "USA", action: "Activated trading bot" },
-  { city: "Singapore", country: "SG", action: "Started free trial" },
+  { city: "Singapore", country: "SG", action: "Upgraded to Platinum" },
 ]
 
 const TICKER_ITEMS = [
@@ -136,9 +136,9 @@ const TRUST_BLOCKS = [
 const FAQS: { q: string; a: string }[] = [
   { q: "Which markets does FXAU support?", a: "FXAU supports forex (XAUUSD, EURUSD, GBPUSD, and more), crypto (BTC, ETH, SOL, etc.), and CFDs. Connect MT4, MT5, Binance, Bybit, or any major exchange via API." },
   { q: "Does it work on MetaTrader?", a: "Yes. FXAU integrates with both MT4 and MT5 via our bridge connector. Setup takes under 5 minutes and our onboarding wizard walks you through every step." },
-  { q: "How do I get started?", a: "Create a free account, connect your broker or exchange API, configure your bot settings, and press activate. The onboarding wizard guides you step by step with no technical knowledge required." },
+  { q: "How do I get started?", a: "Pick a plan, connect your broker or exchange API, configure your bot settings, and press activate. The onboarding wizard guides you step by step with no technical knowledge required." },
   { q: "What happens right after I sign up?", a: "You get instant access to the full dashboard. Start your trading journal, launch your first bot, or browse copy traders immediately — no waiting period." },
-  { q: "Can I try FXAU for free?", a: "Yes. The free plan includes the trading journal and one active bot. Upgrade anytime for unlimited bots, copy trading access, full education library, and priority support." },
+  { q: "Is there a free plan or trial?", a: "No — every FXAU plan is a paid plan, starting with Pro. Every plan comes with a 7-day money-back guarantee, so you can try it risk-free." },
   { q: "Is the AI just sending random signals?", a: "No. FXAU automation is rules-based and data-driven. Your bot follows the exact strategy you configure. The AI-assisted entry detection is an optional enhancement layer — not a black box." },
   { q: "Which broker should I use?", a: "FXAU works with any MT4/MT5 broker or exchange with API access. For best results we recommend brokers with tight spreads and fast execution. Contact us on Telegram for a personal recommendation." },
   { q: "Are profits guaranteed?", a: "No — and any platform that claims that is lying. Trading involves real risk. FXAU gives you better tools, automation, and insights — your results depend on your strategy and market conditions." },
@@ -294,7 +294,7 @@ export default function LandingPage() {
           {/* CTAs */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
             <Link href="/register" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 30px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none", boxShadow: "0 6px 24px rgba(79,142,247,0.35)" }}>
-              🚀 GET STARTED FREE
+              🚀 GET STARTED
             </Link>
             <Link href="/results" style={{ display: "inline-flex", alignItems: "center", padding: "13px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)", color: "#F0F2F7", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none" }}>
               VIEW RESULTS
@@ -544,7 +544,7 @@ export default function LandingPage() {
           {/* Bottom CTA */}
           <div style={{ textAlign: "center", marginTop: "3rem", display: "flex", justifyContent: "center", gap: 12 }}>
             <Link href="/register" style={{ padding: "13px 32px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 6px 24px rgba(79,142,247,0.3)", letterSpacing: "0.04em" }}>
-              Start Free — No Credit Card
+              Get Started
             </Link>
             <Link href="/pricing" style={{ padding: "13px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.14)", color: "#F0F2F7", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
               View Pricing
@@ -795,7 +795,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <Link href="/register" style={{ alignSelf: "flex-start", padding: "11px 26px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 4px 18px rgba(79,142,247,0.3)", letterSpacing: "0.04em" }}>
-                START FREE TRIAL
+                GET STARTED
               </Link>
             </div>
           </div>

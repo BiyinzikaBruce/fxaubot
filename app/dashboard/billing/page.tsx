@@ -10,19 +10,27 @@ import { cn } from "@/lib/utils"
 
 const PLANS = [
   {
-    id: "basic",
-    name: "Basic",
-    monthly: 19,
-    yearly: 190,
-    features: ["Trading Journal", "Analytics", "1 Bot", "Signal Feed"],
+    id: "pro",
+    name: "Pro",
+    monthly: 49.99,
+    yearly: 479.99,
+    features: ["Trading Journal", "Analytics Dashboard", "1 Active Bot", "Signal Feed", "Basic Backtesting"],
   },
   {
-    id: "premium",
-    name: "Premium",
-    monthly: 49,
-    yearly: 490,
-    features: ["Everything in Basic", "Unlimited Bots", "Copy Trading", "Backtesting", "Mentor Access", "Education"],
+    id: "ultimate",
+    name: "Ultimate",
+    monthly: 99.99,
+    yearly: 959.99,
+    features: ["Everything in Pro", "Unlimited Bots", "Copy Trading", "Unlimited Backtesting", "Mentor Access", "Education"],
     highlighted: true,
+  },
+  {
+    id: "platinum",
+    name: "Platinum",
+    monthly: 299.99,
+    yearly: 2879.99,
+    features: ["Everything in Ultimate", "MT5 Account Connection", "Prop Firm Sync", "Custom Strategy Builder", "API Access", "Priority Support"],
+    elite: true,
   },
 ]
 
@@ -97,19 +105,25 @@ export default function BillingPage() {
             {(["monthly", "yearly"] as const).map((b) => (
               <button key={b} onClick={() => setBilling(b)}
                 className={cn("rounded px-3 py-1 text-xs font-medium capitalize transition-colors", billing === b ? "bg-[var(--color-accent-primary)] text-white" : "text-[var(--color-text-secondary)]")}>
-                {b} {b === "yearly" && <span className="text-[10px] opacity-80">-17%</span>}
+                {b} {b === "yearly" && <span className="text-[10px] opacity-80">Save 20%</span>}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {PLANS.map((plan) => (
             <button key={plan.id} onClick={() => setSelectedPlan(plan.id)}
-              className={cn("rounded-[14px] border p-5 text-left transition-all", selectedPlan === plan.id ? "border-[var(--color-accent-primary)] bg-[var(--color-accent-glow)]" : plan.highlighted ? "border-[var(--color-accent-primary)]/40 bg-[var(--color-bg-card)]" : "border-[var(--color-border-subtle)] bg-[var(--color-bg-card)]")}>
+              className={cn(
+                "rounded-[14px] border p-5 text-left transition-all",
+                selectedPlan === plan.id
+                  ? plan.elite ? "border-[#F5A623] bg-[#F5A623]/10" : "border-[var(--color-accent-primary)] bg-[var(--color-accent-glow)]"
+                  : plan.elite ? "border-[#F5A623]/40 bg-[var(--color-bg-card)]" : plan.highlighted ? "border-[var(--color-accent-primary)]/40 bg-[var(--color-bg-card)]" : "border-[var(--color-border-subtle)] bg-[var(--color-bg-card)]",
+              )}>
               <div className="flex items-start justify-between">
                 <p className="font-bold text-[var(--color-text-primary)]">{plan.name}</p>
                 {plan.highlighted && <span className="rounded-full bg-[var(--color-accent-primary)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--color-accent-primary)]">POPULAR</span>}
+                {plan.elite && <span className="rounded-full bg-[#F5A623]/15 px-2 py-0.5 text-[10px] font-bold text-[#F5A623]">ELITE</span>}
               </div>
               <p className="text-2xl font-bold text-[var(--color-text-primary)] mt-2">
                 ${billing === "yearly" ? plan.yearly : plan.monthly}

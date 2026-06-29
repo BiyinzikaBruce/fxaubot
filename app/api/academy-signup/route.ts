@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
               <ul style="margin:0;padding-left:20px;color:#8B93A8;font-size:14px;line-height:2;">
                 <li>Creating your free FXAU account at <a href="https://fxaubot.vercel.app/register" style="color:#4F8EF7;">fxaubot.vercel.app/register</a></li>
                 <li>Joining our Telegram community at <a href="https://t.me/fxaubot" style="color:#4F8EF7;">t.me/fxaubot</a></li>
-                <li>Exploring our free trading tools and journal</li>
+                <li>Exploring our trading tools and journal plans</li>
               </ul>
             </div>
             <p style="font-size:14px;color:#8B93A8;line-height:1.7;">Questions? Reply to this email or message us on Telegram — we respond within hours.</p>
