@@ -58,6 +58,10 @@ export async function provisionMt5Account(input: Mt5ProvisionInput): Promise<str
     platform: input.platform,
     magic: 0,
     manualTrades: true,
+    // "high" reliability (the SDK default) uses redundant infra billed at 2x resource
+    // slots and requires a funded MetaApi plan. "regular" is the standard tier and
+    // is the right default for a multi-tenant SaaS provisioning many user accounts.
+    reliability: "regular",
   })
   await account.deploy()
   return account.id
