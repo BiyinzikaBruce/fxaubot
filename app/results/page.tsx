@@ -399,11 +399,11 @@ export default function ResultsPage() {
           Your result could be <span style={gradText}>next.</span>
         </h2>
         <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 460, margin: "0 auto 2rem" }}>
-          Start free — no credit card needed. Connect your broker and let FXAU do the work.
+          7-day money-back guarantee on every plan. Connect your broker and let FXAU do the work.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link href="/register" style={{ padding: "14px 36px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: "0 6px 28px rgba(79,142,247,0.4)" }}>
-            Start Free Today →
+            Get Started Today →
           </Link>
           <a href="https://t.me/fxaubot" target="_blank" rel="noopener noreferrer"
             style={{ padding: "14px 28px", borderRadius: 999, border: "1px solid rgba(79,142,247,0.3)", color: "#4F8EF7", fontWeight: 700, fontSize: 15, textDecoration: "none", background: "rgba(79,142,247,0.07)" }}>

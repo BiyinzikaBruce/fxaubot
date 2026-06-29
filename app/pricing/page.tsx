@@ -14,73 +14,68 @@ const gradText: React.CSSProperties = {
 // ── Plan data ─────────────────────────────────────────────────────────────
 const PLANS = [
   {
-    name: "Starter",
+    name: "Pro",
     tag: null,
-    desc: "Best for beginner traders getting started",
-    monthly: 0,
-    yearly: 0,
-    cta: "Get Started Free",
-    href: "/register",
+    desc: "For traders ready to automate and track everything",
+    monthly: 49.99,
+    yearly: 39.99,
+    cta: "Start Pro →",
+    href: "/register?plan=pro",
     featured: false,
     color: "rgba(255,255,255,0.06)",
     features: [
-      { text: "Trading journal (50 trades/mo)", ok: true },
+      { text: "Unlimited trade journal", ok: true },
       { text: "1 active bot", ok: true },
-      { text: "1 broker connection", ok: true },
+      { text: "Signal feed", ok: true },
       { text: "Basic analytics dashboard", ok: true },
-      { text: "Community access (read only)", ok: true },
+      { text: "Basic backtesting", ok: true },
       { text: "Copy trading", ok: false },
-      { text: "Backtesting", ok: false },
-      { text: "AI Insights", ok: false },
-      { text: "50+ performance reports", ok: false },
-      { text: "Trade replay", ok: false },
+      { text: "Unlimited active bots", ok: false },
+      { text: "Mentor access", ok: false },
+      { text: "MT5 live account connection", ok: false },
       { text: "Prop firm sync", ok: false },
     ],
   },
   {
-    name: "Pro",
+    name: "Ultimate",
     tag: "MOST POPULAR",
-    desc: "Best for advanced traders who want the full edge",
-    monthly: 29,
-    yearly: 19,
-    cta: "Start Pro →",
-    href: "/register?plan=pro",
+    desc: "Maximum performance for serious traders",
+    monthly: 99.99,
+    yearly: 79.99,
+    cta: "Start Ultimate →",
+    href: "/register?plan=ultimate",
     featured: true,
     color: grad,
     features: [
-      { text: "Unlimited trade journal", ok: true },
-      { text: "5 active bots", ok: true },
-      { text: "Unlimited broker connections", ok: true },
-      { text: "Full analytics suite", ok: true },
-      { text: "Community access (full)", ok: true },
+      { text: "Everything in Pro", ok: true },
+      { text: "Unlimited active bots", ok: true },
       { text: "Copy trading", ok: true },
       { text: "Unlimited backtesting", ok: true },
-      { text: "AI Insights", ok: true },
-      { text: "50+ performance reports", ok: true },
-      { text: "Trade replay", ok: false },
+      { text: "Full analytics suite", ok: true },
+      { text: "Mentor access", ok: true },
+      { text: "Education library", ok: true },
+      { text: "MT5 live account connection", ok: false },
       { text: "Prop firm sync", ok: false },
+      { text: "API access", ok: false },
     ],
   },
   {
-    name: "Elite",
-    tag: "FOR FUNDED TRADERS",
-    desc: "Best for prop traders and funded accounts",
-    monthly: 79,
-    yearly: 49,
-    cta: "Start Elite →",
-    href: "/register?plan=elite",
+    name: "Platinum",
+    tag: "ELITE",
+    desc: "Run bots live, on a real broker, hands-off",
+    monthly: 299.99,
+    yearly: 239.99,
+    cta: "Go Platinum →",
+    href: "/register?plan=platinum",
     featured: false,
-    color: "rgba(255,255,255,0.06)",
+    color: "#F5A623",
     features: [
-      { text: "Everything in Pro", ok: true },
-      { text: "Unlimited active bots", ok: true },
-      { text: "Trade replay (session mode)", ok: true },
+      { text: "Everything in Ultimate", ok: true },
+      { text: "MT5 live account connection", ok: true },
       { text: "Prop firm sync (FTMO, MFF, etc.)", ok: true },
-      { text: "Mentor mode", ok: true },
-      { text: "Strategy tracking & playbooks", ok: true },
-      { text: "Priority 24/7 support", ok: true },
-      { text: "Custom bot builder", ok: true },
+      { text: "Custom strategy builder", ok: true },
       { text: "API access", ok: true },
+      { text: "Priority 24/7 support", ok: true },
       { text: "Early access to new features", ok: true },
       { text: "White-glove onboarding", ok: true },
     ],
@@ -88,30 +83,27 @@ const PLANS = [
 ]
 
 // ── Comparison table rows ─────────────────────────────────────────────────
-const TABLE_ROWS: { label: string; starter: string | boolean; pro: string | boolean; elite: string | boolean }[] = [
-  { label: "Trading Journal",         starter: "50 trades/mo",    pro: "Unlimited",     elite: "Unlimited" },
-  { label: "Active Bots",             starter: "1",               pro: "5",             elite: "Unlimited" },
-  { label: "Broker Connections",      starter: "1",               pro: "Unlimited",     elite: "Unlimited" },
-  { label: "Copy Trading",            starter: false,             pro: true,            elite: true },
-  { label: "Backtesting",             starter: false,             pro: true,            elite: true },
-  { label: "AI Insights",             starter: false,             pro: true,            elite: true },
-  { label: "Performance Reports",     starter: "3 basic",         pro: "50+",           elite: "50+" },
-  { label: "Trade Replay",            starter: false,             pro: false,           elite: true },
-  { label: "Prop Firm Sync",          starter: false,             pro: false,           elite: true },
-  { label: "Mentor Mode",             starter: false,             pro: false,           elite: true },
-  { label: "Strategy Tracking",       starter: false,             pro: true,            elite: true },
-  { label: "Community Access",        starter: "Read only",       pro: "Full",          elite: "Full + Mentor" },
-  { label: "Priority Support",        starter: false,             pro: false,           elite: true },
-  { label: "API Access",              starter: false,             pro: false,           elite: true },
+const TABLE_ROWS: { label: string; pro: string | boolean; ultimate: string | boolean; platinum: string | boolean }[] = [
+  { label: "Trading Journal",         pro: "Unlimited",     ultimate: "Unlimited",        platinum: "Unlimited" },
+  { label: "Active Bots",             pro: "1",             ultimate: "Unlimited",         platinum: "Unlimited" },
+  { label: "MT5 Live Connection",     pro: false,           ultimate: false,               platinum: true },
+  { label: "Copy Trading",            pro: false,           ultimate: true,                platinum: true },
+  { label: "Backtesting",             pro: "Basic",         ultimate: "Unlimited",          platinum: "Unlimited" },
+  { label: "Mentor Access",           pro: false,           ultimate: true,                platinum: true },
+  { label: "Education Library",       pro: false,           ultimate: true,                platinum: true },
+  { label: "Prop Firm Sync",          pro: false,           ultimate: false,               platinum: true },
+  { label: "Custom Strategy Builder", pro: false,           ultimate: false,               platinum: true },
+  { label: "API Access",              pro: false,           ultimate: false,               platinum: true },
+  { label: "Priority Support",        pro: false,           ultimate: false,               platinum: true },
 ]
 
 // ── FAQ data ──────────────────────────────────────────────────────────────
 const FAQS = [
   { q: "Can I switch plans anytime?", a: "Yes. Upgrade or downgrade anytime from your account settings. Changes take effect immediately and are prorated." },
-  { q: "Is there a free trial?", a: "The Starter plan is free forever with no credit card required. You can upgrade to Pro or Elite anytime." },
+  { q: "Is there a free plan?", a: "No — every FXAU plan is a paid plan, starting at Pro. Every plan comes with a 7-day money-back guarantee, so you can try any tier risk-free." },
   { q: "What payment methods do you accept?", a: "We accept all major credit/debit cards via Stripe. We also accept Bitcoin, USDT (TRC20/ERC20), and Skrill — contact us on Telegram for crypto payments." },
   { q: "Do you offer refunds?", a: "We offer a 7-day money-back guarantee on your first payment if you're not satisfied. After that, subscriptions are non-refundable." },
-  { q: "What prop firms does Elite sync with?", a: "FTMO, MyForexFunds, The5%ers, Funded Next, Apex, and more. New firms are added regularly." },
+  { q: "What prop firms does Platinum sync with?", a: "FTMO, MyForexFunds, The5%ers, Funded Next, Apex, and more. New firms are added regularly." },
   { q: "Can I use FXAU on multiple devices?", a: "Yes. Your account works on any device — web browser, iOS, and Android. All data syncs in real time." },
 ]
 
@@ -160,44 +152,53 @@ export default function PricingPage() {
         <h1 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2.4rem,5vw,3.6rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.03em", marginBottom: "1rem" }}>
           Everything you need for<br /><span style={gradText}>consistent profitability</span>
         </h1>
-        <p style={{ color: "#8B93A8", fontSize: 16, marginBottom: "2.5rem", fontWeight: 600, letterSpacing: "0.04em" }}>
+        <p style={{ color: "#8B93A8", fontSize: 16, marginBottom: "1.5rem", fontWeight: 600, letterSpacing: "0.04em" }}>
           HOW MUCH WILL YOU INVEST IN YOUR TRADING SUCCESS TODAY?
         </p>
+
+        {/* Money-back guarantee */}
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 18px", borderRadius: 999, background: "rgba(0,208,132,0.1)", border: "1px solid rgba(0,208,132,0.3)", color: "#00D084", fontSize: 13, fontWeight: 700, marginBottom: "1.75rem" }}>
+          🛡️ 7-Day Money-Back Guarantee
+        </div>
+        <br />
 
         {/* Toggle */}
         <div style={{ display: "inline-flex", alignItems: "center", gap: 0, background: "#111318", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: 4, marginBottom: "3.5rem" }}>
           <button onClick={() => setYearly(false)} style={{ padding: "10px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 15, fontWeight: 700, transition: "all 0.2s", background: !yearly ? "#fff" : "transparent", color: !yearly ? "#08090E" : "#8B93A8" }}>
-            Pay monthly
+            Monthly
           </button>
           <button onClick={() => setYearly(true)} style={{ padding: "10px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 15, fontWeight: 700, transition: "all 0.2s", background: yearly ? grad : "transparent", color: yearly ? "#fff" : "#8B93A8", display: "flex", alignItems: "center", gap: 8 }}>
-            Pay yearly
-            {!yearly && <span style={{ fontSize: 11, fontWeight: 800, color: "#00D084", background: "rgba(0,208,132,0.12)", border: "1px solid rgba(0,208,132,0.25)", padding: "2px 8px", borderRadius: 999 }}>SAVE 34%</span>}
+            Annual
+            {!yearly && <span style={{ fontSize: 11, fontWeight: 800, color: "#fff", background: "rgba(123,92,240,0.5)", border: "1px solid rgba(123,92,240,0.6)", padding: "2px 8px", borderRadius: 999 }}>SAVE 20%</span>}
           </button>
         </div>
       </div>
 
       {/* ── Plan cards ── */}
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 2rem 5rem", display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1.25rem", alignItems: "start" }}>
-        {PLANS.map((plan) => (
+        {PLANS.map((plan) => {
+          const elite = plan.tag === "ELITE"
+          const eliteText: React.CSSProperties = elite ? { color: "#F5A623" } : {}
+          return (
           <div key={plan.name} style={{
             borderRadius: 20,
-            border: plan.featured ? "2px solid rgba(79,142,247,0.6)" : "1px solid rgba(255,255,255,0.08)",
-            background: plan.featured ? "linear-gradient(160deg,#111826,#0D1420)" : "#111318",
+            border: plan.featured ? "2px solid rgba(79,142,247,0.6)" : elite ? "2px solid rgba(245,166,35,0.5)" : "1px solid rgba(255,255,255,0.08)",
+            background: plan.featured ? "linear-gradient(160deg,#111826,#0D1420)" : elite ? "linear-gradient(160deg,#1a1408,#0D0F16)" : "#111318",
             padding: "2rem",
             position: "relative",
-            boxShadow: plan.featured ? "0 0 50px rgba(79,142,247,0.15), 0 20px 60px rgba(0,0,0,0.5)" : "none",
+            boxShadow: plan.featured ? "0 0 50px rgba(79,142,247,0.15), 0 20px 60px rgba(0,0,0,0.5)" : elite ? "0 0 50px rgba(245,166,35,0.12), 0 20px 60px rgba(0,0,0,0.5)" : "none",
             transform: plan.featured ? "scale(1.03)" : "scale(1)",
           }}>
             {/* Badge */}
             {plan.tag && (
-              <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", padding: "4px 16px", borderRadius: 999, background: grad, fontSize: 10, fontWeight: 800, color: "#fff", letterSpacing: "0.08em", whiteSpace: "nowrap", boxShadow: "0 4px 14px rgba(79,142,247,0.4)" }}>
+              <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", padding: "4px 16px", borderRadius: 999, background: elite ? "linear-gradient(135deg,#F5A623,#E08A0C)" : grad, fontSize: 10, fontWeight: 800, color: "#fff", letterSpacing: "0.08em", whiteSpace: "nowrap", boxShadow: elite ? "0 4px 14px rgba(245,166,35,0.4)" : "0 4px 14px rgba(79,142,247,0.4)" }}>
                 {plan.tag}
               </div>
             )}
 
             {/* Plan name */}
             <div style={{ marginBottom: "0.5rem" }}>
-              <h3 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: 22, fontWeight: 800, margin: 0, ...(plan.featured ? gradText : { color: "#F0F2F7" }) }}>
+              <h3 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: 22, fontWeight: 800, margin: 0, ...(plan.featured ? gradText : { color: "#F0F2F7", ...eliteText }) }}>
                 {plan.name}
               </h3>
               <p style={{ color: "#8B93A8", fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>{plan.desc}</p>
@@ -205,20 +206,16 @@ export default function PricingPage() {
 
             {/* Price */}
             <div style={{ margin: "1.5rem 0" }}>
-              {plan.monthly === 0 ? (
-                <div style={{ fontSize: 42, fontWeight: 900, fontFamily: "var(--font-space-grotesk,sans-serif)" }}>Free</div>
-              ) : (
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
-                  <span style={{ fontSize: 20, fontWeight: 700, color: "#8B93A8", alignSelf: "flex-start", marginTop: 8 }}>$</span>
-                  <span style={{ fontSize: 52, fontWeight: 900, fontFamily: "var(--font-space-grotesk,sans-serif)", lineHeight: 1, ...(plan.featured ? gradText : {}) }}>
-                    {yearly ? plan.yearly : plan.monthly}
-                  </span>
-                  <span style={{ fontSize: 14, color: "#8B93A8", marginBottom: 8 }}>/ Month</span>
-                </div>
-              )}
-              {yearly && plan.monthly > 0 && (
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
+                <span style={{ fontSize: 20, fontWeight: 700, color: "#8B93A8", alignSelf: "flex-start", marginTop: 8 }}>$</span>
+                <span style={{ fontSize: 52, fontWeight: 900, fontFamily: "var(--font-space-grotesk,sans-serif)", lineHeight: 1, ...(plan.featured ? gradText : eliteText) }}>
+                  {(yearly ? plan.yearly : plan.monthly).toFixed(2)}
+                </span>
+                <span style={{ fontSize: 14, color: "#8B93A8", marginBottom: 8 }}>/ Month</span>
+              </div>
+              {yearly && (
                 <div style={{ fontSize: 12, color: "#00D084", fontWeight: 700, marginTop: 4 }}>
-                  Billed ${plan.yearly * 12}/year · Save ${(plan.monthly - plan.yearly) * 12}
+                  Billed ${(plan.yearly * 12).toFixed(2)}/year · Save ${((plan.monthly - plan.yearly) * 12).toFixed(2)}
                 </div>
               )}
             </div>
@@ -226,10 +223,10 @@ export default function PricingPage() {
             {/* CTA */}
             <Link href={plan.href} style={{
               display: "block", textAlign: "center", padding: "13px", borderRadius: 12,
-              background: plan.featured ? grad : "rgba(255,255,255,0.06)",
-              border: plan.featured ? "none" : "1px solid rgba(255,255,255,0.12)",
+              background: plan.featured ? grad : elite ? "linear-gradient(135deg,#F5A623,#E08A0C)" : "rgba(255,255,255,0.06)",
+              border: plan.featured || elite ? "none" : "1px solid rgba(255,255,255,0.12)",
               color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none",
-              boxShadow: plan.featured ? "0 6px 24px rgba(79,142,247,0.35)" : "none",
+              boxShadow: plan.featured ? "0 6px 24px rgba(79,142,247,0.35)" : elite ? "0 6px 24px rgba(245,166,35,0.35)" : "none",
               marginBottom: "1.75rem", letterSpacing: "0.02em",
             }}>
               {plan.cta}
@@ -249,7 +246,8 @@ export default function PricingPage() {
               ))}
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* ── Feature comparison table ── */}
@@ -269,7 +267,7 @@ export default function PricingPage() {
               <div key={p.name} style={{ padding: "1.1rem 1rem", textAlign: "center" }}>
                 <div style={{ fontSize: 14, fontWeight: 800, ...(p.featured ? gradText : { color: "#F0F2F7" }) }}>{p.name}</div>
                 <div style={{ fontSize: 12, color: "#8B93A8", marginTop: 2 }}>
-                  {p.monthly === 0 ? "Free" : `$${yearly ? p.yearly : p.monthly}/mo`}
+                  ${(yearly ? p.yearly : p.monthly).toFixed(2)}/mo
                 </div>
               </div>
             ))}
@@ -278,9 +276,9 @@ export default function PricingPage() {
           {TABLE_ROWS.map((row, i) => (
             <div key={row.label} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", background: i % 2 === 0 ? "rgba(255,255,255,0.015)" : "transparent", borderBottom: i < TABLE_ROWS.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
               <div style={{ padding: "0.9rem 1.5rem", fontSize: 13, color: "#8B93A8", fontWeight: 500 }}>{row.label}</div>
-              <div style={{ padding: "0.9rem 1rem", textAlign: "center" }}><Cell val={row.starter} /></div>
               <div style={{ padding: "0.9rem 1rem", textAlign: "center" }}><Cell val={row.pro} /></div>
-              <div style={{ padding: "0.9rem 1rem", textAlign: "center" }}><Cell val={row.elite} /></div>
+              <div style={{ padding: "0.9rem 1rem", textAlign: "center" }}><Cell val={row.ultimate} /></div>
+              <div style={{ padding: "0.9rem 1rem", textAlign: "center" }}><Cell val={row.platinum} /></div>
             </div>
           ))}
         </div>
@@ -369,14 +367,14 @@ export default function PricingPage() {
       {/* ── Bottom CTA ── */}
       <section style={{ textAlign: "center", padding: "5rem 2rem", background: "#0D0F16", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(1.8rem,4vw,2.6rem)", fontWeight: 900, letterSpacing: "-0.02em", marginBottom: "1rem" }}>
-          Start free. <span style={gradText}>Upgrade when ready.</span>
+          Pick your edge. <span style={gradText}>Start trading smarter.</span>
         </h2>
         <p style={{ color: "#8B93A8", fontSize: 16, maxWidth: 440, margin: "0 auto 2rem", lineHeight: 1.75 }}>
-          No credit card needed to get started. Join 12,400+ traders already using FXAU.
+          7-day money-back guarantee on every plan. Join 12,400+ traders already using FXAU.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link href="/register" style={{ padding: "14px 36px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: "0 6px 28px rgba(79,142,247,0.4)" }}>
-            Get Started Free →
+            Get Started →
           </Link>
           <a href="https://t.me/fxausupport" target="_blank" rel="noopener noreferrer"
             style={{ padding: "14px 28px", borderRadius: 999, border: "1px solid rgba(79,142,247,0.3)", color: "#4F8EF7", fontWeight: 700, fontSize: 15, textDecoration: "none", background: "rgba(79,142,247,0.07)" }}>

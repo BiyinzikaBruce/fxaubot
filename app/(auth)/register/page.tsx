@@ -93,10 +93,10 @@ export default function RegisterPage() {
         {/* Headline */}
         <div style={{ marginBottom: "2.5rem" }}>
           <h1 style={{ fontFamily: "var(--font-space-grotesk, sans-serif)", fontSize: "clamp(2.2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: "1rem" }}>
-            Trade smarter.<br /><span style={gradText}>Start free today.</span>
+            Trade smarter.<br /><span style={gradText}>Start today.</span>
           </h1>
           <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 400 }}>
-            Join thousands of traders who journal, automate, and grow with FXAU. No credit card required.
+            Join thousands of traders who journal, automate, and grow with FXAU. 7-day money-back guarantee on every plan.
           </p>
         </div>
 
@@ -133,7 +133,7 @@ export default function RegisterPage() {
           {/* Header */}
           <div style={{ marginBottom: "2rem" }}>
             <h2 style={{ fontFamily: "var(--font-space-grotesk, sans-serif)", fontSize: 26, fontWeight: 800, marginBottom: 6, letterSpacing: "-0.01em" }}>Create your account</h2>
-            <p style={{ color: "#8B93A8", fontSize: 15 }}>Get started free — no credit card needed.</p>
+            <p style={{ color: "#8B93A8", fontSize: 15 }}>Pick a plan and get trading in minutes.</p>
           </div>
 
           {/* Google button */}
@@ -214,7 +214,7 @@ export default function RegisterPage() {
             {/* Submit */}
             <button type="submit" disabled={isSubmitting}
               style={{ width: "100%", padding: "15px", borderRadius: 12, background: grad, color: "#fff", fontSize: 16, fontWeight: 700, border: "none", cursor: isSubmitting ? "not-allowed" : "pointer", opacity: isSubmitting ? 0.6 : 1, boxShadow: "0 6px 24px rgba(79,142,247,0.35)", letterSpacing: "0.02em", transition: "opacity 0.2s, transform 0.1s", marginTop: 4 }}>
-              {isSubmitting ? "Creating account…" : "Create Free Account →"}
+              {isSubmitting ? "Creating account…" : "Create Account →"}
             </button>
           </form>
 
