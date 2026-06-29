@@ -33,7 +33,20 @@ enum Exchange {
   bybit
   okx
   coinbase
+  mt5
   manual
+}
+
+enum Mt5AccountType {
+  demo
+  live
+}
+
+enum Mt5ConnectionStatus {
+  connecting
+  connected
+  failed
+  disconnected
 }
 
 enum TradeSide {
@@ -168,6 +181,19 @@ model TradingAccount {
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // MT5 connection fields — set when exchange = mt5
+  broker           String?
+  mt5Login         String?
+  mt5Password      String? // AES-256-GCM encrypted (lib/crypto.ts)
+  mt5Server        String?
+  mt5Platform      String?              @default("mt5") // "mt4" | "mt5"
+  accountType      Mt5AccountType?
+  metaApiAccountId String?
+  connectionStatus Mt5ConnectionStatus?
+  equity           Float?
+  lastSyncedAt     DateTime?
+  lastError        String?
 
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   trades     Trade[]
