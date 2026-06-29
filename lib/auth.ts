@@ -28,6 +28,14 @@ export const auth = betterAuth({
     enabled: true,
   },
   socialProviders: googleProvider,
+  user: {
+    additionalFields: {
+      role: { type: "string", required: false, defaultValue: "trader", input: false },
+      plan: { type: "string", required: false, defaultValue: "none", input: false },
+      planBilling: { type: "string", required: false, input: false },
+      planExpiresAt: { type: "date", required: false, input: false },
+    },
+  },
   session: {
     expiresIn: 60 * 60 * 24 * 30,
     updateAge: 60 * 60 * 24,

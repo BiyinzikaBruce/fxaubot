@@ -45,7 +45,7 @@ export default function SettingsPage() {
     }
   }
 
-  const plan = (user as { plan?: string } | undefined)?.plan ?? "none"
+  const plan = user?.plan ?? "none"
   const initials = name ? name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) : "U"
 
   return (
@@ -104,7 +104,7 @@ export default function SettingsPage() {
         <p className="text-sm font-semibold text-[var(--color-text-primary)]">Account Info</p>
         <div className="grid grid-cols-2 gap-4 text-sm">
           {[
-            ["Role", (user as { role?: string } | undefined)?.role ?? "trader"],
+            ["Role", user?.role ?? "trader"],
             ["Plan", plan === "none" ? "Free" : plan],
             ["Member since", user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"],
           ].map(([label, value]) => (
