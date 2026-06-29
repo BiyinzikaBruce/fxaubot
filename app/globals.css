@@ -98,23 +98,29 @@
 
 /* ─── Base Styles ────────────────────────────────────────────── */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Scoped in @layer base so Tailwind's utilities layer (p-*, m-*, etc.) can
+   still override this reset — unlayered rules always beat layered ones
+   regardless of specificity, which silently zeroed every padding/margin
+   utility in the app. */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-html {
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  background: var(--color-bg-primary);
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
-  line-height: 1.5;
+  body {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
 }
 
 /* ─── Skeleton Shimmer ───────────────────────────────────────── */
