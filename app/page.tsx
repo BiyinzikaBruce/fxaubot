@@ -246,7 +246,7 @@ export default function LandingPage() {
           <span style={{ fontSize: 18, fontWeight: 800, fontFamily: "var(--font-space-grotesk, sans-serif)", ...gradText }}>FXAU</span>
         </Link>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+        <div className="nav-links" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
           {NAV_LINKS.map(l => (
             <Link key={l.label} href={l.href} style={{ color: "#8B93A8", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#F0F2F7")}
@@ -256,15 +256,15 @@ export default function LandingPage() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Link href="/login" style={{ color: "#8B93A8", fontSize: 14, fontWeight: 500, textDecoration: "none" }}>Sign In</Link>
+          <Link href="/login" className="nav-signin" style={{ color: "#8B93A8", fontSize: 14, fontWeight: 500, textDecoration: "none" }}>Sign In</Link>
           <Link href="/register" style={{ padding: "8px 22px", borderRadius: 999, background: grad, color: "#fff", fontSize: 14, fontWeight: 700, textDecoration: "none", boxShadow: "0 4px 14px rgba(79,142,247,0.3)", letterSpacing: "0.02em" }}>GET STARTED</Link>
         </div>
       </nav>
 
       {/* ══ HERO ══════════════════════════════════════════════════════════════ */}
-      <section style={{ minHeight: "calc(100vh - 64px)", display: "flex", alignItems: "center", ...sectionPad, maxWidth: 1280, margin: "0 auto", gap: "4rem" }}>
+      <section className="hero-section" style={{ minHeight: "calc(100vh - 64px)", display: "flex", flexWrap: "wrap", alignItems: "center", ...sectionPad, maxWidth: 1280, margin: "0 auto", gap: "4rem" }}>
         {/* Left */}
-        <div style={{ flex: "1 1 500px", display: "flex", flexDirection: "column", gap: "1.75rem" }}>
+        <div className="hero-text" style={{ flex: "1 1 500px", display: "flex", flexDirection: "column", gap: "1.75rem" }}>
           {/* Live badge */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 999, border: "1px solid rgba(79,142,247,0.35)", background: "rgba(79,142,247,0.08)", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#4F8EF7", alignSelf: "flex-start" }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4F8EF7", boxShadow: "0 0 6px #4F8EF7", animation: "livePulse 1.5s ease-in-out infinite", flexShrink: 0 }} />
@@ -278,12 +278,12 @@ export default function LandingPage() {
           </h1>
 
           {/* Sub */}
-          <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 480, margin: 0 }}>
+          <p className="hero-description" style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 480, margin: 0 }}>
             FXAU executes precision trades across every market using advanced AI automation. Journal, automate, copy, Backtesting and learn — all in one platform. Always on.
           </p>
 
           {/* Feature checks */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px 28px" }}>
+          <div className="hero-features" style={{ display: "flex", flexWrap: "wrap", gap: "12px 28px" }}>
             {HERO_FEATURES.map(f => (
               <span key={f} style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 14, color: "#8B93A8", fontWeight: 500 }}>
                 <span style={{ color: "#4F8EF7", fontWeight: 800 }}>✓</span> {f}
@@ -292,15 +292,16 @@ export default function LandingPage() {
           </div>
 
           {/* CTAs */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-            <Link href="/register" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 30px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none", boxShadow: "0 6px 24px rgba(79,142,247,0.35)" }}>
+          <div className="hero-ctas" style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+            <Link href="/register" className="hero-cta-primary" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "13px 30px", borderRadius: 999, background: grad, color: "#fff", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none", boxShadow: "0 6px 24px rgba(79,142,247,0.35)" }}>
               🚀 GET STARTED
             </Link>
-            <Link href="/results" style={{ display: "inline-flex", alignItems: "center", padding: "13px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)", color: "#F0F2F7", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none" }}>
+            <Link href="/results" className="hero-cta-secondary" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "13px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)", color: "#F0F2F7", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none" }}>
               VIEW RESULTS
             </Link>
             <a href="https://t.me/fxaubot" target="_blank" rel="noopener noreferrer"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 26px", borderRadius: 999, border: "1px solid rgba(79,142,247,0.3)", color: "#4F8EF7", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none", background: "rgba(79,142,247,0.07)" }}>
+              className="hero-cta-telegram"
+              style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "13px 26px", borderRadius: 999, border: "1px solid rgba(79,142,247,0.3)", color: "#4F8EF7", fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", textDecoration: "none", background: "rgba(79,142,247,0.07)" }}>
               ✈️ JOIN TELEGRAM
             </a>
           </div>
@@ -316,7 +317,7 @@ export default function LandingPage() {
         </div>
 
         {/* Right: Multi-scene product demo */}
-        <div style={{ flex: "1 1 480px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <div className="hero-demo" style={{ flex: "1 1 480px", display: "flex", justifyContent: "center", alignItems: "center" }}>
           <div style={{ width: "100%", maxWidth: 480, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(79,142,247,0.22)", background: "#0D0F16", boxShadow: "0 0 80px rgba(79,142,247,0.14), 0 32px 80px rgba(0,0,0,0.7)" }}>
 
             {/* Browser chrome */}
@@ -493,7 +494,7 @@ export default function LandingPage() {
           </div>
 
           {/* 4 × 2 feature grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.25rem" }}>
+          <div className="features-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.25rem" }}>
             {ALL_FEATURES.map((f, i) => (
               <div
                 key={f.title}
@@ -555,9 +556,9 @@ export default function LandingPage() {
 
       {/* ══ PLATFORM SECTION ═════════════════════════════════════════════════ */}
       <section style={{ ...sectionPad }}>
-        <div style={{ ...container, display: "flex", alignItems: "center", gap: "5rem" }}>
+        <div className="platform-wrap" style={{ ...container, display: "flex", alignItems: "center", gap: "5rem" }}>
           {/* Left: Big animated phone — live portfolio */}
-          <div style={{ flex: "0 0 340px", display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
+          <div className="platform-phone" style={{ flex: "0 0 340px", display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
             <div style={{ position: "relative", width: 340 }}>
               {/* Glow */}
               <div style={{ position: "absolute", inset: "-40px", borderRadius: 80, background: "radial-gradient(ellipse at 50% 40%, rgba(79,142,247,0.13) 0%, transparent 70%)", zIndex: -1 }} />
@@ -683,10 +684,10 @@ export default function LandingPage() {
           </div>
 
           {/* Right: Desktop mockup + text */}
-          <div style={{ flex: "1 1 560px", display: "flex", flexDirection: "column", gap: "2rem" }}>
+          <div className="platform-right" style={{ flex: "1 1 560px", display: "flex", flexDirection: "column", gap: "2rem" }}>
 
             {/* ── Animated desktop dashboard ── */}
-            <div style={{ borderRadius: 14, border: "1px solid rgba(79,142,247,0.18)", background: "#111318", overflow: "hidden", boxShadow: "0 0 50px rgba(79,142,247,0.1), 0 20px 60px rgba(0,0,0,0.6)" }}>
+            <div className="platform-desktop" style={{ borderRadius: 14, border: "1px solid rgba(79,142,247,0.18)", background: "#111318", overflow: "hidden", boxShadow: "0 0 50px rgba(79,142,247,0.1), 0 20px 60px rgba(0,0,0,0.6)" }}>
               {/* Browser chrome */}
               <div style={{ padding: "0.6rem 0.85rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8, background: "#0A0B10" }}>
                 <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#FF5F57" }} />
@@ -821,6 +822,7 @@ export default function LandingPage() {
 
           {/* App window mockup */}
           <div style={{ borderRadius: 16, border: "1px solid rgba(79,142,247,0.18)", background: "#111318", overflow: "hidden", boxShadow: "0 0 80px rgba(79,142,247,0.08), 0 40px 100px rgba(0,0,0,0.6)" }}>
+          <div style={{ overflowX: "auto" }}>
             {/* Window chrome bar */}
             <div style={{ padding: "0.7rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8, background: "#0A0B10" }}>
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#FF5F57" }} />
@@ -832,7 +834,7 @@ export default function LandingPage() {
             </div>
 
             {/* App body: sidebar + main */}
-            <div style={{ display: "flex", height: 500 }}>
+            <div style={{ display: "flex", height: 500, minWidth: 640 }}>
               {/* Sidebar icons */}
               <div style={{ width: 54, borderRight: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", gap: "1.1rem", background: "rgba(0,0,0,0.25)", flexShrink: 0 }}>
                 {[
@@ -1007,6 +1009,7 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          </div>
         </div>
       </section>
 
@@ -1080,7 +1083,7 @@ export default function LandingPage() {
       {/* ══ FOOTER ════════════════════════════════════════════════════════════ */}
       <footer id="contact" style={{ background: "#08090E", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "4rem 2rem 2rem" }}>
         <div style={{ ...container }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "3rem", marginBottom: "3rem" }}>
+          <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "3rem", marginBottom: "3rem" }}>
             {/* Brand col */}
             <div>
               <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "1rem" }}>
@@ -1178,6 +1181,100 @@ export default function LandingPage() {
         @keyframes slideInRow {
           from { opacity: 0; transform: translateX(14px); }
           to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ── Mobile responsive ─────────────────────────────── */
+        @media (max-width: 900px) {
+          /* Navbar: hide middle links and sign-in on small screens */
+          .nav-links { display: none !important; }
+          .nav-signin { display: none !important; }
+
+          /* ── Hero: stack text above demo ─────────────────── */
+          .hero-section {
+            flex-direction: column !important;
+            padding: 2.5rem 1.25rem 2rem !important;
+            gap: 2rem !important;
+            min-height: auto !important;
+            align-items: flex-start !important;
+          }
+          .hero-text {
+            flex: none !important;
+            width: 100% !important;
+            gap: 1.25rem !important;
+          }
+          .hero-description { max-width: 100% !important; }
+
+          /* Feature checks: 2-column grid */
+          .hero-features {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px 16px !important;
+          }
+
+          /* CTA buttons: full-width, stacked */
+          .hero-ctas {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+          .hero-cta-primary,
+          .hero-cta-secondary,
+          .hero-cta-telegram {
+            width: 100% !important;
+            justify-content: center !important;
+            padding: 14px 20px !important;
+          }
+
+          /* Demo: full-width below text */
+          .hero-demo {
+            flex: none !important;
+            width: 100% !important;
+            justify-content: flex-start !important;
+          }
+          .hero-demo > div { max-width: 100% !important; width: 100% !important; }
+
+          /* Features section: 2-column on tablet */
+          .features-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+          /* Platform: text first (order -1), then phone */
+          .platform-wrap {
+            flex-direction: column !important;
+            gap: 2.5rem !important;
+            padding: 0 1.25rem !important;
+          }
+          .platform-right {
+            order: -1 !important;
+            flex: none !important;
+            width: 100% !important;
+          }
+          .platform-phone {
+            flex: none !important;
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .platform-phone > div { max-width: 300px !important; width: 100% !important; }
+          /* Hide complex desktop journal mockup — phone demo is enough */
+          .platform-desktop { display: none !important; }
+
+          /* Footer: 2-column */
+          .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 2rem !important; }
+
+          /* Global section padding reduction */
+          section { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+        }
+
+        @media (max-width: 540px) {
+          /* Single column on phones */
+          .features-grid { grid-template-columns: 1fr !important; }
+          .footer-grid { grid-template-columns: 1fr !important; }
+
+          /* Hero: tighten further */
+          .hero-section { padding: 1.75rem 1rem 1.5rem !important; gap: 1.75rem !important; }
+
+          /* H1 shrinks a touch more on tiny screens */
+          .hero-text h1 { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
+
+          /* Single-column feature checks on very small phones */
+          .hero-features { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>
