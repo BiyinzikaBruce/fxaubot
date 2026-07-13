@@ -4,6 +4,7 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Sidebar } from "@/components/layout/sidebar"
 import { MobileHeader } from "@/components/layout/mobile-header"
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav"
 import { UpgradeNudge } from "@/components/dashboard/upgrade-nudge"
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -36,17 +37,20 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       <main
         className={cn(
           "min-h-screen transition-[margin] duration-300",
-          // Mobile: no left margin (sidebar is drawer overlay)
-          // Desktop: margin matches current sidebar width
           collapsed ? "lg:ml-[68px]" : "lg:ml-[260px]",
-          // Offset for the mobile top bar
+          // Top offset for mobile header
           "pt-14 lg:pt-0",
+          // Bottom offset for mobile bottom nav
+          "pb-20 lg:pb-0",
         )}
       >
         <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px]">
           {children}
         </div>
       </main>
+
+      {/* Mobile bottom navigation — hidden on desktop */}
+      <MobileBottomNav />
 
       <UpgradeNudge />
     </div>
