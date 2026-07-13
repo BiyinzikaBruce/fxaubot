@@ -1027,7 +1027,13 @@ export default function LandingPage() {
       {/* ══ TRUST / BUY WITH CONFIDENCE ══════════════════════════════════════ */}
       <section style={{ ...sectionPad }}>
         <div style={container}>
-          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+            style={{ textAlign: "center", marginBottom: "3.5rem" }}
+          >
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#4F8EF7", marginBottom: "1rem" }}>TRANSPARENCY FIRST</div>
             <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", margin: "0 0 1rem" }}>
               Trade with <span style={gradText}>confidence</span>
@@ -1035,10 +1041,17 @@ export default function LandingPage() {
             <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 500, margin: "0 auto" }}>
               We keep things transparent. Here is exactly what you get, what to expect, and how we protect you.
             </p>
-          </div>
+          </motion.div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem" }}>
-            {TRUST_BLOCKS.map(block => (
-              <div key={block.title} style={{ padding: "2rem", borderRadius: 16, background: "#111318", border: "1px solid rgba(255,255,255,0.07)" }}>
+            {TRUST_BLOCKS.map((block, i) => (
+              <motion.div
+                key={block.title}
+                initial={{ opacity: 0, y: 36, scale: 0.97 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: i * 0.1 }}
+                style={{ padding: "2rem", borderRadius: 16, background: "#111318", border: "1px solid rgba(255,255,255,0.07)" }}
+              >
                 <div style={{ fontSize: 28, marginBottom: "1rem" }}>{block.icon}</div>
                 <h3 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: 18, fontWeight: 700, marginBottom: "0.75rem", color: "#F0F2F7" }}>{block.title}</h3>
                 <p style={{ color: "#8B93A8", fontSize: 14, lineHeight: 1.75, margin: 0 }}>{block.body}</p>
@@ -1047,7 +1060,7 @@ export default function LandingPage() {
                     ✈️ {block.link.label}
                   </a>
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
