@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   LayoutDashboard,
@@ -24,6 +23,7 @@ import {
   Sun,
   Moon,
   Sparkle,
+  X,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
@@ -72,13 +72,22 @@ const NAV_SECTIONS = [
 ]
 
 interface SidebarProps {
+  collapsed: boolean
+  onCollapsedChange: (val: boolean) => void
+  mobileOpen?: boolean
+  onMobileClose?: () => void
   className?: string
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({
+  collapsed,
+  onCollapsedChange,
+  mobileOpen = false,
+  onMobileClose,
+  className,
+}: SidebarProps) {
   const pathname = usePathname()
   const { resolvedTheme, setTheme } = useTheme()
-  const [collapsed, setCollapsed] = useState(false)
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -89,15 +98,21 @@ export function Sidebar({ className }: SidebarProps) {
 
   return (
     <motion.aside
+      // Only animate width — Framer Motion does not touch CSS transform here,
+      // so the Tailwind translate-x classes below work without conflict.
       animate={{ width: collapsed ? 68 : 260 }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className={cn(
-        "fixed left-0 top-0 h-screen flex flex-col z-50 overflow-hidden",
+        "fixed left-0 top-0 h-screen flex flex-col z-[60] overflow-hidden",
         "bg-[var(--color-bg-secondary)] border-r border-[var(--color-border-subtle)]",
-        className
+        // Mobile: slide in/out via CSS transition
+        // Desktop: always visible (lg:translate-x-0 overrides the negative translate)
+        "transition-transform duration-300 ease-in-out",
+        mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+        className,
       )}
     >
-      {/* Logo */}
+      {/* Logo + toggle */}
       <div className="flex items-center gap-3 px-5 h-[76px] border-b border-[var(--color-border-subtle)] shrink-0">
         <div
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl shadow-[0_4px_16px_rgba(79,142,247,0.35)]"
@@ -124,9 +139,11 @@ export function Sidebar({ className }: SidebarProps) {
             </motion.span>
           )}
         </AnimatePresence>
+
+        {/* Desktop: collapse toggle */}
         <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-card)] transition-colors ml-auto"
+          onClick={() => onCollapsedChange(!collapsed)}
+          className="hidden lg:flex p-1.5 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-card)] transition-colors ml-auto"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
@@ -134,6 +151,15 @@ export function Sidebar({ className }: SidebarProps) {
           ) : (
             <ChevronLeft className="h-4 w-4" />
           )}
+        </button>
+
+        {/* Mobile: close button */}
+        <button
+          onClick={onMobileClose}
+          className="lg:hidden flex p-1.5 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-card)] transition-colors ml-auto"
+          aria-label="Close navigation"
+        >
+          <X className="h-4 w-4" />
         </button>
       </div>
 
@@ -158,13 +184,14 @@ export function Sidebar({ className }: SidebarProps) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={() => onMobileClose?.()}
                     title={collapsed ? item.label : undefined}
                     className={cn(
                       "relative flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl transition-all",
                       "font-[var(--font-display)] text-[15px] font-medium",
                       isActive
                         ? "text-[var(--color-accent-primary)] shadow-[0_2px_12px_rgba(79,142,247,0.18)]"
-                        : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)] hover:translate-x-0.5"
+                        : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)] hover:translate-x-0.5",
                     )}
                     style={
                       isActive
@@ -202,13 +229,12 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* Bottom: theme toggle + user */}
       <div className="shrink-0 border-t border-[var(--color-border-subtle)] p-4 space-y-2">
-        {/* Theme toggle */}
         <button
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           title={resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           className={cn(
             "flex items-center gap-3.5 w-full px-3.5 py-2.5 rounded-xl transition-colors",
-            "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)]"
+            "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)]",
           )}
         >
           {resolvedTheme === "dark" ? (
@@ -230,13 +256,12 @@ export function Sidebar({ className }: SidebarProps) {
           </AnimatePresence>
         </button>
 
-        {/* User info */}
         {session?.user && (
           <div
             className={cn(
               "flex items-center gap-3 px-3.5 py-3 rounded-xl",
               "border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)]",
-              collapsed ? "justify-center" : ""
+              collapsed ? "justify-center" : "",
             )}
           >
             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#4F8EF7] to-[#7B5CF0] flex items-center justify-center text-white text-sm font-semibold shrink-0">
