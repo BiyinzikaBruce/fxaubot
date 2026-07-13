@@ -77,7 +77,7 @@ export default function RegisterPage() {
     <div style={{ minHeight: "100vh", display: "flex", background: "#08090E", fontFamily: "var(--font-dm-sans, sans-serif)", color: "#F0F2F7" }}>
 
       {/* ── Left panel ─────────────────────────────────────────────────────── */}
-      <div style={{ flex: "0 0 52%", position: "relative", display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 4rem 4rem 4.5rem", overflow: "hidden" }}
+      <div style={{ flex: "0 0 52%", position: "relative", flexDirection: "column", justifyContent: "center", padding: "4rem 4rem 4rem 4.5rem", overflow: "hidden" }}
         className="hidden lg:flex">
         {/* Background glow blobs */}
         <div style={{ position: "absolute", top: "-10%", left: "-10%", width: "55%", height: "55%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(79,142,247,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />

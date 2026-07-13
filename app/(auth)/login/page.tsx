@@ -70,7 +70,7 @@ export default function LoginPage() {
     <div style={{ minHeight: "100vh", display: "flex", background: "#08090E", fontFamily: "var(--font-dm-sans, sans-serif)", color: "#F0F2F7" }}>
 
       {/* ── Left panel ─────────────────────────────────────────────────────── */}
-      <div style={{ flex: "0 0 52%", position: "relative", display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 4rem 4rem 4.5rem", overflow: "hidden" }}
+      <div style={{ flex: "0 0 52%", position: "relative", flexDirection: "column", justifyContent: "center", padding: "4rem 4rem 4rem 4.5rem", overflow: "hidden" }}
         className="hidden lg:flex">
         {/* Background glow */}
         <div style={{ position: "absolute", top: "0%", left: "-15%", width: "60%", height: "60%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(79,142,247,0.16) 0%, transparent 70%)", pointerEvents: "none" }} />
