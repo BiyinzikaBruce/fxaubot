@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -483,7 +484,13 @@ export default function LandingPage() {
       <section id="features" style={{ ...sectionPad, background: "#0D0F16" }}>
         <div style={container}>
           {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+            style={{ textAlign: "center", marginBottom: "3.5rem" }}
+          >
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#4F8EF7", marginBottom: "1rem" }}>EVERYTHING YOU NEED</div>
             <h2 style={{ fontFamily: "var(--font-space-grotesk,sans-serif)", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.12, letterSpacing: "-0.02em", margin: "0 0 1rem" }}>
               One platform. <span style={gradText}>Every edge.</span>
@@ -491,13 +498,17 @@ export default function LandingPage() {
             <p style={{ color: "#8B93A8", fontSize: 16, lineHeight: 1.75, maxWidth: 500, margin: "0 auto" }}>
               Everything a serious trader needs — journaling, automation, analysis, and community — built into one seamless platform.
             </p>
-          </div>
+          </motion.div>
 
           {/* 4 × 2 feature grid */}
           <div className="features-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.25rem" }}>
             {ALL_FEATURES.map((f, i) => (
-              <div
+              <motion.div
                 key={f.title}
+                initial={{ opacity: 0, y: 36, scale: 0.97 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: (i % 4) * 0.08 }}
                 style={{
                   padding: "1.75rem 1.5rem",
                   borderRadius: 16,
@@ -538,7 +549,7 @@ export default function LandingPage() {
                 </div>
                 {/* Bottom accent line */}
                 <div style={{ height: 2, borderRadius: 1, background: `linear-gradient(90deg, rgba(${i % 2 === 0 ? "79,142,247" : "123,92,240"},0.5), transparent)`, marginTop: "auto" }} />
-              </div>
+              </motion.div>
             ))}
           </div>
 
