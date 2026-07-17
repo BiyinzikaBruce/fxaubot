@@ -12,6 +12,7 @@ import { Mt5AccountsBar } from "@/components/dashboard/mt5-accounts-bar"
 import {
   TrendingUp, Percent, BarChart2, Zap, Trophy, AlertTriangle, Flame, CalendarDays, History,
 } from "lucide-react"
+import { MarketVoiceButton } from "@/components/dashboard/market-voice-button"
 
 function fmt(n: number) {
   const sign = n >= 0 ? "+" : ""
@@ -82,7 +83,11 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader title="Dashboard" breadcrumbs={[{ label: "Dashboard" }]} />
+      <PageHeader
+        title="Dashboard"
+        breadcrumbs={[{ label: "Dashboard" }]}
+        actions={<MarketVoiceButton autoPlay />}
+      />
 
       <Mt5AccountsBar />
 
