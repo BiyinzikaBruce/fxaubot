@@ -7,7 +7,7 @@ export function useOandaAccounts(): { data: TradingAccount[]; isLoading: boolean
   const query = useAccounts()
   return {
     isLoading: query.isLoading,
-    data: (query.data ?? []).filter((a) => a.exchange === "oanda"),
+    data: (query.data ?? []).filter((a: TradingAccount) => a.exchange === "oanda"),
   }
 }
 
