@@ -10,6 +10,7 @@ export type TradingAccount = {
   currency: string
   isDefault: boolean
   createdAt: string
+  // MT5 fields
   broker?: string | null
   mt5Login?: string | null
   mt5Server?: string | null
@@ -20,6 +21,9 @@ export type TradingAccount = {
   equity?: number | null
   lastSyncedAt?: string | null
   lastError?: string | null
+  // OANDA fields
+  oandaAccountId?: string | null
+  oandaEnvironment?: "practice" | "live" | null
 }
 
 export function useAccounts() {
