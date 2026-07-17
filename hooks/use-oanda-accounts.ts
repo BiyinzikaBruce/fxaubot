@@ -43,8 +43,8 @@ export function useSyncOandaAccount() {
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Failed to sync OANDA account")
       const updated = json as TradingAccount
-      qc.setQueryData<TradingAccount[]>(["accounts"], (prev) =>
-        prev?.map((a) => (a.id === updated.id ? updated : a)),
+      qc.setQueryData<TradingAccount[]>(["accounts"], (prev: TradingAccount[] | undefined) =>
+        prev?.map((a: TradingAccount) => (a.id === updated.id ? updated : a)),
       )
       return updated
     },
