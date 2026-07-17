@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/layout/page-header"
 import { useAccounts, useCreateAccount, useDeleteAccount, type TradingAccount } from "@/hooks/use-accounts"
 import { useOandaAccounts, useSyncOandaAccount } from "@/hooks/use-oanda-accounts"
 import { ConnectOandaModal } from "@/components/dashboard/connect-oanda-modal"
+import { cn } from "@/lib/utils"
 
 const EXCHANGES = ["manual", "binance", "bybit", "okx", "coinbase"]
 const inputCls = "rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-bg-elevated)] px-3 py-2 text-sm text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent-primary)] w-full"
