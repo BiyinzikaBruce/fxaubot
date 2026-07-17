@@ -42,11 +42,8 @@ export function useSyncOandaAccount() {
       const res = await fetch(`/api/accounts/oanda/${accountId}/sync`, { method: "POST" })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Failed to sync OANDA account")
-      const updated = json as TradingAccount
-      qc.setQueryData<TradingAccount[]>(["accounts"], (prev: TradingAccount[] | undefined) =>
-        prev?.map((a: TradingAccount) => (a.id === updated.id ? updated : a)),
-      )
-      return updated
+      return json as TradingAccount
     },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["accounts"] }),
   })
 }
