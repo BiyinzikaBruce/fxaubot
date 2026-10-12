@@ -36,6 +36,26 @@ export function useConnectMt5Account() {
   })
 }
 
+export type CreateMt5BridgeInput = { name: string; broker: string; accountType: "demo" | "live" }
+
+/** Creates an EA-bridge MT5 account. The returned key is shown once — only its hash is stored. */
+export function useCreateMt5Bridge() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: CreateMt5BridgeInput): Promise<{ account: TradingAccount; key: string }> => {
+      const res = await fetch("/api/accounts/mt5-bridge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      const json = await res.json().catch(() => null)
+      if (!res.ok) throw new Error(json?.error ?? "Failed to create MT5 connection")
+      return json
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["accounts"] }),
+  })
+}
+
 export function useSyncMt5Account(
   accountId: string,
   options?: { enabled?: boolean; refetchInterval?: number | false },

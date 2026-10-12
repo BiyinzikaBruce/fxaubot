@@ -21,6 +21,9 @@ export type TradingAccount = {
   equity?: number | null
   lastSyncedAt?: string | null
   lastError?: string | null
+  // MT5 EA bridge fields
+  connectionMode?: "metaapi" | "ea" | null
+  bridgeLastSeenAt?: string | null
   // OANDA fields
   oandaAccountId?: string | null
   oandaEnvironment?: "practice" | "live" | null

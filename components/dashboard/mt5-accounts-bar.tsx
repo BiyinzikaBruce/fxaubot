@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { Plus, Loader2, AlertTriangle, Trash2, Link2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useMt5Accounts } from "@/hooks/use-mt5-accounts"
@@ -20,9 +21,18 @@ const STATUS_DOT: Record<string, string> = {
   disconnected: "bg-[var(--color-text-tertiary)]",
 }
 
+/** EA accounts are "connected" only while the EA keeps polling (every ~5s). */
+function effectiveStatus(account: TradingAccount) {
+  if (account.connectionMode !== "ea") return account.connectionStatus ?? "disconnected"
+  const seen = account.bridgeLastSeenAt ? Date.now() - new Date(account.bridgeLastSeenAt).getTime() : Infinity
+  return seen < 30_000 ? "connected" : "disconnected"
+}
+
 function Mt5AccountCard({ account }: { account: TradingAccount }) {
-  const isConnecting = account.connectionStatus === "connecting"
+  const isEa = account.connectionMode === "ea"
+  const isConnecting = !isEa && account.connectionStatus === "connecting"
   useSyncMt5Account(account.id, { enabled: isConnecting, refetchInterval: isConnecting ? 4000 : false })
+  const status = effectiveStatus(account)
   const { mutate: del, isPending: deleting } = useDeleteAccount()
 
   return (
@@ -45,7 +55,7 @@ function Mt5AccountCard({ account }: { account: TradingAccount }) {
           </span>
         </div>
         <p className="text-xs text-[var(--color-text-muted)] truncate">
-          {account.broker} · {account.mt5Server}
+          {account.broker}{account.mt5Server ? ` · ${account.mt5Server}` : ""}{isEa ? " · EA" : ""}
         </p>
         {account.connectionStatus === "failed" && account.lastError ? (
           <p className="flex items-center gap-1 text-[11px] text-[var(--color-loss)] mt-0.5">
@@ -53,16 +63,18 @@ function Mt5AccountCard({ account }: { account: TradingAccount }) {
           </p>
         ) : (
           <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-            {account.connectionStatus === "connected"
+            {status === "connected"
               ? `${fmtMoney(account.balance, account.currency)} bal · ${fmtMoney(account.equity, account.currency)} eq`
-              : account.connectionStatus === "connecting"
+              : status === "connecting"
                 ? "Connecting to broker…"
-                : "Disconnected"}
+                : isEa
+                  ? account.bridgeLastSeenAt ? "MT5 offline — open MT5 with the FXAU EA" : "Waiting for MT5 EA…"
+                  : "Disconnected"}
           </p>
         )}
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <span className={cn("h-2 w-2 rounded-full", STATUS_DOT[account.connectionStatus ?? "disconnected"])} />
+        <span className={cn("h-2 w-2 rounded-full", STATUS_DOT[status])} />
         <button
           onClick={() => { if (confirm(`Remove "${account.name}"?`)) del(account.id) }}
           disabled={deleting}
@@ -77,6 +89,14 @@ function Mt5AccountCard({ account }: { account: TradingAccount }) {
 
 export function Mt5AccountsBar() {
   const { data: accounts, isLoading } = useMt5Accounts()
+  const qc = useQueryClient()
+  const hasEa = accounts.some((a) => a.connectionMode === "ea")
+  // EA status is derived from its last poll, so keep account data fresh while one exists
+  useEffect(() => {
+    if (!hasEa) return
+    const t = setInterval(() => qc.invalidateQueries({ queryKey: ["accounts"] }), 10_000)
+    return () => clearInterval(t)
+  }, [hasEa, qc])
   const [showModal, setShowModal] = useState(false)
 
   if (isLoading) {
