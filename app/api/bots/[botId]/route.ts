@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: Params) {
     where: { id: botId, userId: session.user.id },
     include: {
       account: { select: { name: true, exchange: true, balance: true } },
-      signals: { orderBy: { triggeredAt: "desc" }, take: 50 },
+      signals: { where: { signalType: { not: "neutral" } }, orderBy: { triggeredAt: "desc" }, take: 50 },
     },
   })
   if (!bot) return Response.json({ error: "Not found" }, { status: 404 })

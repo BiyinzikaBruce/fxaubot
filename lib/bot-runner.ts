@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db"
 import { getAdapter, type ExchangeName, type OHLCV } from "@/lib/exchanges/index"
 import { evaluateSignal, type StrategyConfig } from "@/lib/indicators/index"
-import { getForexBroker, isForexAccount, TIMEFRAME_MS, type OrderSide } from "@/lib/brokers"
+import { getForexBroker, isForexAccount, stopPrices, TIMEFRAME_MS, type OrderSide } from "@/lib/brokers"
 import { brokerSymbolMatches, bridgeSymbolKey, hasInflightBridgeOrder, isBridgeAccount, isBridgeOnline, queueBridgeOrder } from "@/lib/bridge"
 import type { BotConfig, TradingAccount } from "@prisma/client"
 
@@ -53,6 +53,7 @@ export async function runBot(botId: string, opts: RunOptions = {}): Promise<BotR
 /**
  * Evaluates the strategy on the latest candle of `closed` (callers must pass closed candles only).
  * Returns null when that candle was already evaluated, so frequent runs never act twice on one signal.
+ * Only BUY/SELL signals are stored (with the planned entry/SL/TP); neutral candles just advance lastCandleAt.
  */
 async function evaluate(bot: BotWithAccount, closed: OHLCV[]) {
   const last = closed[closed.length - 1]
@@ -61,16 +62,19 @@ async function evaluate(bot: BotWithAccount, closed: OHLCV[]) {
   if (bot.lastCandleAt && candleAt <= bot.lastCandleAt) return null
 
   const { signal, values } = evaluateSignal(closed, bot.strategy as unknown as StrategyConfig)
+  await prisma.botConfig.update({ where: { id: bot.id }, data: { lastCandleAt: candleAt } })
+  if (signal === "neutral") return { signal, signalId: null, lastClose: last.close }
+
+  const plan = stopPrices(signal, last.close, bot.stopLossPct, bot.takeProfitPct)
   const record = await prisma.botSignal.create({
     data: {
       botConfigId: bot.id,
       symbol: bot.symbol,
       timeframe: bot.timeframe,
       signalType: signal,
-      indicatorValues: values,
+      indicatorValues: { ...values, price: last.close, stopLoss: plan.stopLoss, takeProfit: plan.takeProfit },
     },
   })
-  await prisma.botConfig.update({ where: { id: bot.id }, data: { lastCandleAt: candleAt } })
   return { signal, signalId: record.id, lastClose: last.close }
 }
 
@@ -189,7 +193,11 @@ async function runBridgeBot(bot: BotWithAccount, opts: RunOptions): Promise<BotR
       message: "MT5 EA bots evaluate automatically each time MT5 closes a new candle — nothing to run manually.",
     }
   }
-  if (await hasInflightBridgeOrder(bot.accountId, bridgeSymbolKey(bot.symbol))) {
+  const key = bridgeSymbolKey(bot.symbol)
+  if (bot.account.bridgePositions.some((s) => brokerSymbolMatches(s, key))) {
+    return { status: "skipped", signal: opts.forceSide, message: `You already have an open ${bot.symbol} trade from FXAU. Close it in MT5 first.` }
+  }
+  if (await hasInflightBridgeOrder(bot.accountId, key)) {
     return { status: "skipped", signal: opts.forceSide, message: "An order for this symbol is already on its way to MT5." }
   }
   await queueBridgeOrder(bot, opts.forceSide, null)

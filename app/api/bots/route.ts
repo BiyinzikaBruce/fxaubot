@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     `bots:${userId}`,
     () => prisma.botConfig.findMany({
       where: { userId },
-      include: { account: { select: { name: true, exchange: true } }, _count: { select: { signals: true } } },
+      include: { account: { select: { name: true, exchange: true } }, _count: { select: { signals: { where: { signalType: { not: "neutral" } } } } } },
       orderBy: { createdAt: "desc" },
     }),
     60,

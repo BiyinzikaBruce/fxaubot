@@ -6,11 +6,11 @@ import { PageHeader } from "@/components/layout/page-header"
 import { useSignals, type BotSignal } from "@/hooks/use-signals"
 import { useBots, type BotConfig } from "@/hooks/use-bots"
 import { cn } from "@/lib/utils"
+import { fmtPrice, signalPlan } from "@/lib/signal-text"
 
 const SIGNAL_BG: Record<string, string> = {
   buy: "var(--color-profit)",
   sell: "var(--color-loss)",
-  neutral: "var(--color-border-subtle)",
 }
 
 export default function SignalsPage() {
@@ -44,7 +44,7 @@ export default function SignalsPage() {
           {bots.map((b: BotConfig) => <option key={b.id} value={b.id}>{b.name}</option>)}
         </select>
         <div className="flex gap-1">
-          {["", "buy", "sell", "neutral"].map((t) => (
+          {["", "buy", "sell"].map((t) => (
             <button
               key={t}
               onClick={() => setTypeFilter(t)}
@@ -74,7 +74,7 @@ export default function SignalsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-border-subtle)]">
-                  {["Time", "Bot", "Symbol", "TF", "Signal", "Acted", "Indicators"].map((h) => (
+                  {["Time", "Bot", "Symbol", "TF", "Signal", "Entry", "Stop Loss", "Take Profit", "Traded"].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)]">{h}</th>
                   ))}
                 </tr>
@@ -91,13 +91,13 @@ export default function SignalsPage() {
                         {s.signalType}
                       </span>
                     </td>
+                    <td className="px-4 py-3 tabular-nums text-[var(--color-text-primary)]">{fmtPrice(signalPlan(s)?.price)}</td>
+                    <td className="px-4 py-3 tabular-nums text-[var(--color-loss)]">{fmtPrice(signalPlan(s)?.stopLoss)}</td>
+                    <td className="px-4 py-3 tabular-nums text-[var(--color-profit)]">{fmtPrice(signalPlan(s)?.takeProfit)}</td>
                     <td className="px-4 py-3">
                       <span className={cn("text-xs font-medium", s.acted ? "text-[var(--color-profit)]" : "text-[var(--color-text-muted)]")}>
-                        {s.acted ? "Yes" : "—"}
+                        {s.acted ? "Yes" : "No"}
                       </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-[var(--color-text-muted)]">
-                      {Object.entries(s.indicatorValues).map(([k, v]) => `${k}: ${v}`).join(" · ")}
                     </td>
                   </tr>
                 ))}
