@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils"
 import type { IndicatorConfig, StrategyConfig } from "@/lib/indicators/index"
 
 const STEPS = ["Exchange & Account", "Symbol & Timeframe", "Strategy", "Position Sizing", "Review"]
-const EXCHANGES = ["binance", "bybit", "okx", "coinbase"]
 const TIMEFRAMES = ["1m", "5m", "15m", "30m", "1h", "4h", "1d"]
-const COMMON_SYMBOLS = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT", "ADA/USDT", "EUR/USD", "GBP/USD"]
+const CRYPTO_SYMBOLS = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT", "ADA/USDT"]
+const FOREX_SYMBOLS = ["XAU/USD", "EUR/USD", "GBP/USD", "USD/JPY", "GBP/JPY", "AUD/USD", "USD/CAD", "XAG/USD"]
+const isForex = (exchange: string) => exchange === "mt5" || exchange === "oanda"
 
 const inputCls = "rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-bg-elevated)] px-3 py-2 text-sm text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent-primary)] transition-colors w-full"
 
@@ -25,18 +26,20 @@ type FormState = {
   positionSizePct: number
   stopLossPct: number
   takeProfitPct: number
+  autoTrade: boolean
 }
 
 const INITIAL: FormState = {
   name: "",
   accountId: "",
-  exchange: "binance",
-  symbol: "BTC/USDT",
+  exchange: "",
+  symbol: "XAU/USD",
   timeframe: "1h",
   strategy: { indicators: [], logic: "AND" },
   positionSizePct: 1,
   stopLossPct: 2,
   takeProfitPct: 4,
+  autoTrade: true,
 }
 
 function IndicatorBuilder({ strategy, onChange }: { strategy: StrategyConfig; onChange: (s: StrategyConfig) => void }) {
@@ -129,11 +132,24 @@ export default function CreateBotPage() {
   const [step, setStep] = useState(0)
   const [form, setForm] = useState<FormState>(INITIAL)
   const accountsQuery = useAccounts()
-  const accounts: TradingAccount[] = accountsQuery.data ?? []
+  const accounts: TradingAccount[] = (accountsQuery.data ?? []).filter((a: TradingAccount) => a.exchange !== "manual")
+  const forex = isForex(form.exchange)
   const { mutateAsync, isPending } = useCreateBot()
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }))
+  }
+
+  function selectAccount(accountId: string) {
+    const account = accounts.find((a) => a.id === accountId)
+    setForm((f) => {
+      const exchange = account?.exchange ?? ""
+      if (isForex(exchange) === isForex(f.exchange)) return { ...f, accountId, exchange }
+      // Switching market type: forex needs much tighter % stops than crypto
+      return isForex(exchange)
+        ? { ...f, accountId, exchange, symbol: "XAU/USD", stopLossPct: 0.5, takeProfitPct: 1 }
+        : { ...f, accountId, exchange, symbol: "BTC/USDT", stopLossPct: 2, takeProfitPct: 4 }
+    })
   }
 
   async function handleSubmit() {
@@ -173,17 +189,14 @@ export default function CreateBotPage() {
               <input value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="e.g. RSI Scalper" className={inputCls} />
             </label>
             <label className="flex flex-col gap-1.5 text-xs font-medium text-[var(--color-text-secondary)]">
-              Exchange
-              <select value={form.exchange} onChange={(e) => update("exchange", e.target.value)} className={inputCls}>
-                {EXCHANGES.map((ex) => <option key={ex} value={ex}>{ex.charAt(0).toUpperCase() + ex.slice(1)}</option>)}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1.5 text-xs font-medium text-[var(--color-text-secondary)]">
               Trading Account
-              <select value={form.accountId} onChange={(e) => update("accountId", e.target.value)} className={inputCls}>
+              <select value={form.accountId} onChange={(e) => selectAccount(e.target.value)} className={inputCls}>
                 <option value="">Select account</option>
-                {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                {accounts.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.exchange.toUpperCase()})</option>)}
               </select>
+              {accounts.length === 0 && !accountsQuery.isLoading && (
+                <span className="font-normal text-[var(--color-text-muted)]">Connect an MT5 or OANDA account on the Accounts page first.</span>
+              )}
             </label>
           </div>
         )}
@@ -193,7 +206,7 @@ export default function CreateBotPage() {
             <label className="flex flex-col gap-1.5 text-xs font-medium text-[var(--color-text-secondary)]">
               Symbol
               <input value={form.symbol} onChange={(e) => update("symbol", e.target.value)} list="symbols-list" className={inputCls} />
-              <datalist id="symbols-list">{COMMON_SYMBOLS.map((s) => <option key={s} value={s} />)}</datalist>
+              <datalist id="symbols-list">{(forex ? FOREX_SYMBOLS : CRYPTO_SYMBOLS).map((s) => <option key={s} value={s} />)}</datalist>
             </label>
             <div>
               <p className="mb-2 text-xs font-medium text-[var(--color-text-secondary)]">Timeframe</p>
@@ -215,7 +228,23 @@ export default function CreateBotPage() {
 
         {step === 3 && (
           <div className="flex flex-col gap-4">
-            {([["positionSizePct", "Position Size (%)", "% of balance per trade"], ["stopLossPct", "Stop Loss (%)", "% below entry"], ["takeProfitPct", "Take Profit (%)", "% above entry"]] as const).map(([key, label, hint]) => (
+            <div>
+              <p className="mb-2 text-xs font-medium text-[var(--color-text-secondary)]">Mode</p>
+              <div className="flex gap-2">
+                {([[true, "Auto-trade", "Places real orders on signals"], [false, "Signal only", "Notifies you, never trades"]] as const).map(([value, label, hint]) => (
+                  <button key={label} onClick={() => update("autoTrade", value)}
+                    className={cn("flex-1 rounded-lg px-3 py-2 text-left transition-colors", form.autoTrade === value ? "bg-[var(--color-accent-primary)] text-white" : "border border-[var(--color-border-subtle)] text-[var(--color-text-secondary)]")}>
+                    <span className="block text-xs font-semibold">{label}</span>
+                    <span className="block text-[11px] opacity-80">{hint}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            {([
+              ["positionSizePct", forex ? "Risk per Trade (%)" : "Position Size (%)", forex ? "% of balance lost if the stop loss is hit — lot size is calculated from this" : "% of balance per trade"],
+              ["stopLossPct", "Stop Loss (%)", "distance from entry, as % of price (e.g. 0.5% on gold ≈ $20)"],
+              ["takeProfitPct", "Take Profit (%)", "distance from entry, as % of price"],
+            ] as const).map(([key, label, hint]) => (
               <label key={key} className="flex flex-col gap-1.5 text-xs font-medium text-[var(--color-text-secondary)]">
                 {label}
                 <input type="number" step="0.1" min="0.1" value={form[key]} onChange={(e) => update(key, parseFloat(e.target.value))} className={inputCls} />
@@ -229,12 +258,14 @@ export default function CreateBotPage() {
           <div className="flex flex-col gap-3 text-sm">
             {[
               ["Name", form.name],
-              ["Exchange", form.exchange],
+              ["Account", accounts.find((a) => a.id === form.accountId)?.name ?? "—"],
+              ["Exchange", form.exchange.toUpperCase()],
+              ["Mode", form.autoTrade ? "Auto-trade" : "Signal only"],
               ["Symbol", form.symbol],
               ["Timeframe", form.timeframe],
               ["Indicators", form.strategy.indicators.map((i) => i.type).join(", ") || "None"],
               ["Logic", form.strategy.logic],
-              ["Position Size", `${form.positionSizePct}%`],
+              [forex ? "Risk per Trade" : "Position Size", `${form.positionSizePct}%`],
               ["Stop Loss", `${form.stopLossPct}%`],
               ["Take Profit", `${form.takeProfitPct}%`],
             ].map(([k, v]) => (

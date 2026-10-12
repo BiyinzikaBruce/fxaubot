@@ -14,6 +14,9 @@ export type BotConfig = {
   stopLossPct: number
   takeProfitPct: number
   isActive: boolean
+  autoTrade: boolean
+  lastRunAt: string | null
+  lastError: string | null
   createdAt: string
   account: { name: string; exchange: string }
   _count: { signals: number }
@@ -38,6 +41,9 @@ export type BotDetail = {
   stopLossPct: number
   takeProfitPct: number
   isActive: boolean
+  autoTrade: boolean
+  lastRunAt: string | null
+  lastError: string | null
   createdAt: string
   account: { name: string; exchange: string; balance: number }
   _count: { signals: number }
@@ -141,6 +147,34 @@ export function useStopBot() {
     onSuccess: (_: unknown, botId: string) => {
       qc.invalidateQueries({ queryKey: ["bots"] })
       qc.invalidateQueries({ queryKey: ["bot", botId] })
+    },
+  })
+}
+
+export type BotRunResult = {
+  status: "skipped" | "signal" | "queued" | "traded" | "error"
+  signal: "buy" | "sell" | "neutral"
+  message: string
+}
+
+/** Runs the strategy now, or with `side` places an immediate test trade using the bot's sizing + SL/TP. */
+export function useRunBot() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ botId, side }: { botId: string; side?: "buy" | "sell" }): Promise<BotRunResult> => {
+      const res = await fetch(`/api/bots/${botId}/run`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(side ? { side } : {}),
+      })
+      const json = await res.json().catch(() => null)
+      if (!json?.status) throw new Error(json?.error ?? "Failed to run bot")
+      return json as BotRunResult
+    },
+    onSettled: (_data: unknown, _err: unknown, { botId }: { botId: string; side?: "buy" | "sell" }) => {
+      qc.invalidateQueries({ queryKey: ["bots"] })
+      qc.invalidateQueries({ queryKey: ["bot", botId] })
+      qc.invalidateQueries({ queryKey: ["trades"] })
     },
   })
 }

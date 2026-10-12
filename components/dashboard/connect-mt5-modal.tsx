@@ -4,6 +4,7 @@ import { useState } from "react"
 import { X, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useConnectMt5Account } from "@/hooks/use-mt5-accounts"
+import { ConnectMt5EaPanel } from "@/components/dashboard/connect-mt5-ea-panel"
 
 const BROKERS = ["Exness", "IC Markets", "XM", "FBS", "Pepperstone", "Other"]
 
@@ -18,6 +19,7 @@ type Props = {
 
 export function ConnectMt5Modal({ open, onClose }: Props) {
   const { mutate: connect, isPending, error, reset } = useConnectMt5Account()
+  const [method, setMethod] = useState<"ea" | "cloud">("ea")
 
   const [broker, setBroker] = useState(BROKERS[0])
   const [accountType, setAccountType] = useState<"demo" | "live">("demo")
@@ -46,7 +48,7 @@ export function ConnectMt5Modal({ open, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6 shadow-2xl">
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)] font-[var(--font-display)]">
             Connect MT5 Account
@@ -59,6 +61,26 @@ export function ConnectMt5Modal({ open, onClose }: Props) {
           </button>
         </div>
 
+        <div className="mb-4 grid grid-cols-2 gap-2">
+          {([["ea", "EA Bridge", "Free · runs in your MT5"], ["cloud", "Cloud", "MetaApi · paid"]] as const).map(([m, label, hint]) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMethod(m)}
+              className={cn(
+                "rounded-lg border px-3 py-2 text-left transition-colors",
+                method === m
+                  ? "border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10"
+                  : "border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-elevated)]",
+              )}
+            >
+              <span className="block text-sm font-semibold text-[var(--color-text-primary)]">{label}</span>
+              <span className="block text-[11px] text-[var(--color-text-muted)]">{hint}</span>
+            </button>
+          ))}
+        </div>
+
+        {method === "ea" ? <ConnectMt5EaPanel onDone={handleClose} /> : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Demo / Live toggle */}
           <div className="flex rounded-lg border border-[var(--color-border-subtle)] p-1 bg-[var(--color-bg-elevated)]">
@@ -151,6 +173,7 @@ export function ConnectMt5Modal({ open, onClose }: Props) {
             Your password is encrypted at rest and never shown again.
           </p>
         </form>
+        )}
       </div>
     </div>
   )

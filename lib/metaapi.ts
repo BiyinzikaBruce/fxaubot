@@ -2,6 +2,7 @@
 // prefers a browser-targeted ESM build under Next's externals resolution,
 // which crashes server-side with "window is not defined".
 import MetaApi from "metaapi.cloud-sdk/node"
+import { floorToStep, stopPrices, type ForexBroker } from "@/lib/brokers/types"
 
 let client: MetaApi | null = null
 
@@ -106,3 +107,98 @@ export async function removeMt5Account(metaApiAccountId: string): Promise<void> 
 }
 
 export { friendlyError }
+
+// ── Trading (used by the bot runner) ─────────────────────────────────────────
+
+/**
+ * Opens one RPC connection per bot run. Sizing uses the broker's lossTickValue
+ * (loss per tick per lot, already in account currency), so no FX conversion is needed.
+ */
+export async function createMt5Broker(metaApiAccountId: string): Promise<ForexBroker> {
+  const api = getClient()
+  const account = await api.metatraderAccountApi.getAccount(metaApiAccountId)
+  if (account.state !== "DEPLOYED") {
+    throw new Error(`MT5 account is ${account.state.toLowerCase()} on MetaApi, not deployed. Reconnect it from the Accounts page.`)
+  }
+  const connection = account.getRPCConnection()
+  try {
+    await connection.connect()
+    await connection.waitSynchronized(30)
+  } catch (err) {
+    await connection.close().catch(() => {})
+    throw new Error(`Could not reach MT5 broker: ${friendlyError(err)}`)
+  }
+
+  let symbols: string[] | null = null
+
+  return {
+    async resolveSymbol(symbol) {
+      const base = symbol.toUpperCase().replace(/[^A-Z0-9]/g, "")
+      symbols ??= await connection.getSymbols()
+      // Exact match first, then broker-suffixed variants (Exness "XAUUSDm", IC "EURUSD.a", …)
+      const match = symbols.find((s) => s.toUpperCase() === base)
+        ?? symbols.find((s) => s.toUpperCase().startsWith(base))
+      if (!match) throw new Error(`Broker does not offer "${symbol}" on this MT5 account.`)
+      return match
+    },
+
+    async fetchCandles(symbol, timeframe, count) {
+      const candles = await account.getHistoricalCandles(symbol, timeframe, undefined, count)
+      return candles
+        .map((c) => ({
+          timestamp: new Date(c.time).getTime(),
+          open: c.open,
+          high: c.high,
+          low: c.low,
+          close: c.close,
+          volume: c.tickVolume,
+        }))
+        .sort((a, b) => a.timestamp - b.timestamp)
+    },
+
+    async getBalance() {
+      return (await connection.getAccountInformation()).balance
+    },
+
+    async hasOpenPosition(symbol) {
+      const positions = await connection.getPositions()
+      return positions.some((p) => p.symbol === symbol)
+    },
+
+    async placeRiskOrder({ symbol, side, riskAmount, stopLossPct, takeProfitPct }) {
+      const [spec, price] = await Promise.all([
+        connection.getSymbolSpecification(symbol),
+        connection.getSymbolPrice(symbol, false),
+      ])
+      const entry = side === "buy" ? price.ask : price.bid
+      const { stopLoss, takeProfit, slDistance } = stopPrices(side, entry, stopLossPct, takeProfitPct)
+
+      const lossPerLot = (slDistance / spec.tickSize) * price.lossTickValue
+      let volume = floorToStep(riskAmount / lossPerLot, spec.volumeStep)
+      volume = Math.min(volume, spec.maxVolume)
+      if (volume < spec.minVolume) {
+        throw new Error(
+          `Position too small: risk ${riskAmount.toFixed(2)} with a ${stopLossPct}% stop gives ${volume} lots (minimum ${spec.minVolume}). Increase risk % or tighten the stop.`,
+        )
+      }
+
+      const roundPrice = (p: number) => Math.round(p / spec.tickSize) * spec.tickSize
+      const sl = roundPrice(stopLoss)
+      const tp = roundPrice(takeProfit)
+      const opts = { comment: "FXAU bot" }
+      try {
+        const res = side === "buy"
+          ? await connection.createMarketBuyOrder(symbol, volume, sl, tp, opts)
+          : await connection.createMarketSellOrder(symbol, volume, sl, tp, opts)
+        return { orderId: res.positionId ?? res.orderId, price: entry, quantity: volume, stopLoss: sl, takeProfit: tp }
+      } catch (err) {
+        const e = err as { stringCode?: string; message?: string }
+        throw new Error(`MT5 rejected the order${e.stringCode ? ` (${e.stringCode})` : ""}: ${e.message ?? "unknown error"}`)
+      }
+    },
+
+    async close() {
+      await connection.close().catch(() => {})
+    },
+  }
+}

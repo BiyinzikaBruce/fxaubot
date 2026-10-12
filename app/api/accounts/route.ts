@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       prisma.tradingAccount.findMany({
         where: { userId },
         orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
-        omit: { mt5Password: true },
+        omit: { mt5Password: true, oandaAccessToken: true, bridgeKeyHash: true },
       }),
     300,
   )

@@ -27,23 +27,29 @@ export async function POST(req: NextRequest) {
   const userId = session.user.id
 
   const body = await req.json() as {
-    name: string; accountId: string; exchange: string; symbol: string
+    name: string; accountId: string; symbol: string
     timeframe: string; strategy: unknown; positionSizePct?: number
-    stopLossPct?: number; takeProfitPct?: number
+    stopLossPct?: number; takeProfitPct?: number; autoTrade?: boolean
   }
+
+  // Exchange always comes from the user's own account, never from the client
+  const account = await prisma.tradingAccount.findFirst({ where: { id: body.accountId, userId }, select: { exchange: true } })
+  if (!account) return Response.json({ error: "Trading account not found" }, { status: 404 })
+  if (account.exchange === "manual") return Response.json({ error: "Manual accounts can't run bots" }, { status: 422 })
 
   const bot = await prisma.botConfig.create({
     data: {
       userId,
       name: body.name,
       accountId: body.accountId,
-      exchange: body.exchange as never,
+      exchange: account.exchange,
       symbol: body.symbol,
       timeframe: body.timeframe,
       strategy: body.strategy as never,
       positionSizePct: body.positionSizePct ?? 1,
       stopLossPct: body.stopLossPct ?? 2,
       takeProfitPct: body.takeProfitPct ?? 4,
+      autoTrade: body.autoTrade ?? true,
     },
   })
 
