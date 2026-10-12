@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
     where: {
       botConfig: { userId },
       ...(botId ? { botConfigId: botId } : {}),
-      ...(signal ? { signalType: signal as never } : {}),
+      // Neutral = "no trade"; only BUY/SELL are meaningful to users
+      signalType: signal ? (signal as never) : { not: "neutral" },
     },
     include: { botConfig: { select: { name: true, symbol: true } } },
     orderBy: { triggeredAt: "desc" },

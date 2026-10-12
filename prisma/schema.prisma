@@ -206,6 +206,7 @@ model TradingAccount {
   connectionMode   String?   // "metaapi" | "ea" (null = metaapi, for accounts created before the bridge)
   bridgeKeyHash    String?   // sha256 of the EA's connection key; the key itself is shown once
   bridgeLastSeenAt DateTime?
+  bridgePositions  String[]  @default([]) // broker symbols of FXAU positions open at the EA's last sync
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   trades       Trade[]

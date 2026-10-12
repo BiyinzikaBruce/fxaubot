@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
       broker: account.broker ?? body.company,
       connectionStatus: "connected",
       bridgeLastSeenAt: new Date(),
+      bridgePositions: body.positions.map((p) => p.symbol),
       lastSyncedAt: new Date(),
       lastError: null,
     },

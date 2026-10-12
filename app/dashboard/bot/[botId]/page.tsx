@@ -7,13 +7,13 @@ import { AlertTriangle, ArrowDownRight, ArrowLeft, ArrowUpRight, Play, RefreshCw
 import { PageHeader } from "@/components/layout/page-header"
 import { useBot, useRunBot, useStartBot, useStopBot, type BotRunResult, type BotSignalEntry } from "@/hooks/use-bots"
 import { cn } from "@/lib/utils"
+import { fmtPrice, marketName, signalPlan } from "@/lib/signal-text"
 
 type Props = { params: Promise<{ botId: string }> }
 
 const SIGNAL_BG: Record<string, string> = {
   buy: "var(--color-profit)",
   sell: "var(--color-loss)",
-  neutral: "var(--color-border-subtle)",
 }
 
 export default function BotDetailPage({ params }: Props) {
@@ -55,6 +55,8 @@ export default function BotDetailPage({ params }: Props) {
   const buySignals = botSignals.filter((s) => s.signalType === "buy").length
   const sellSignals = botSignals.filter((s) => s.signalType === "sell").length
   const actedSignals = botSignals.filter((s) => s.acted).length
+  const latest = botSignals[0]
+  const latestPlan = latest ? signalPlan(latest) : null
 
   return (
     <div className="flex flex-col gap-6">
@@ -110,6 +112,44 @@ export default function BotDetailPage({ params }: Props) {
         ))}
       </div>
 
+      {/* Latest signal: the one thing a trader needs to see */}
+      {latest && latestPlan ? (
+        <div
+          className="flex flex-col gap-3 rounded-[14px] border p-6 sm:flex-row sm:items-center sm:justify-between"
+          style={{ borderColor: SIGNAL_BG[latest.signalType], background: `color-mix(in srgb, ${SIGNAL_BG[latest.signalType]} 8%, transparent)` }}
+        >
+          <div className="flex items-center gap-4">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-white" style={{ background: SIGNAL_BG[latest.signalType] }}>
+              {latestPlan.action === "BUY" ? <ArrowUpRight className="h-6 w-6" /> : <ArrowDownRight className="h-6 w-6" />}
+            </span>
+            <div>
+              <p className="text-xs uppercase tracking-wider text-[var(--color-text-muted)]">Latest signal · {format(new Date(latest.triggeredAt), "MMM d, HH:mm")}</p>
+              <p className="text-2xl font-bold" style={{ color: SIGNAL_BG[latest.signalType] }}>
+                {latestPlan.action} {marketName(bot.symbol)}{" "}
+                {latestPlan.price !== undefined && <span className="text-[var(--color-text-primary)]">at {fmtPrice(latestPlan.price)}</span>}
+              </p>
+              {latestPlan.stopLoss !== undefined && (
+                <p className="text-sm text-[var(--color-text-secondary)]">
+                  Stop loss <b>{fmtPrice(latestPlan.stopLoss)}</b> · Take profit <b>{fmtPrice(latestPlan.takeProfit)}</b>
+                </p>
+              )}
+            </div>
+          </div>
+          <span className={cn("self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-center",
+            latest.acted ? "bg-[var(--color-profit)]/15 text-[var(--color-profit)]" : "bg-[var(--color-bg-elevated)] text-[var(--color-text-muted)]")}>
+            {latest.acted ? "Trade placed" : bot.autoTrade ? "Not traded" : "Signal only"}
+          </span>
+        </div>
+      ) : (
+        <div className="rounded-[14px] border border-dashed border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6">
+          <p className="text-base font-semibold text-[var(--color-text-primary)]">Waiting for the next BUY or SELL signal</p>
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+            The bot checks {marketName(bot.symbol)} at the close of every {bot.timeframe} candle{bot.isActive ? "" : " once you press Start"}.
+            {bot.lastRunAt && ` Last checked ${format(new Date(bot.lastRunAt), "HH:mm")}.`}
+          </p>
+        </div>
+      )}
+
       {/* Execution */}
       <div className="flex flex-col gap-4 rounded-[14px] border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -155,7 +195,7 @@ export default function BotDetailPage({ params }: Props) {
         {[
           ["Buy Signals", buySignals, "var(--color-profit)"],
           ["Sell Signals", sellSignals, "var(--color-loss)"],
-          ["Acted", actedSignals, "var(--color-accent-primary)"],
+          ["Traded", actedSignals, "var(--color-accent-primary)"],
         ].map(([label, value, color]) => (
           <div key={label as string} className="rounded-[14px] border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)] p-5">
             <p className="text-xs text-[var(--color-text-muted)]">{label as string}</p>
@@ -164,41 +204,45 @@ export default function BotDetailPage({ params }: Props) {
         ))}
       </div>
 
-      {/* Signal history */}
+      {/* Signal history: BUY/SELL only, in plain language */}
       <div className="rounded-[14px] border border-[var(--color-border-subtle)] bg-[var(--color-bg-card)]">
         <div className="px-6 py-4 border-b border-[var(--color-border-subtle)]">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Signal History</h2>
+          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Buy &amp; Sell Signals</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--color-border-subtle)]">
-                {["Time", "Type", "Acted", "Indicator Values"].map((h) => (
+                {["Time", "Signal", "Entry", "Stop Loss", "Take Profit", "Traded"].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)]">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {botSignals.map((s) => (
-                <tr key={s.id} className="border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-elevated)]/50">
-                  <td className="px-4 py-3 text-[var(--color-text-muted)] whitespace-nowrap">{format(new Date(s.triggeredAt), "MMM d HH:mm")}</td>
-                  <td className="px-4 py-3">
-                    <span className="inline-flex h-5 items-center rounded-full px-2 text-[10px] font-bold uppercase text-white" style={{ background: SIGNAL_BG[s.signalType] }}>
-                      {s.signalType}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={cn("text-xs font-medium", s.acted ? "text-[var(--color-profit)]" : "text-[var(--color-text-muted)]")}>
-                      {s.acted ? "Yes" : "No"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-[var(--color-text-muted)]">
-                    {Object.entries(s.indicatorValues).map(([k, v]) => `${k}: ${v}`).join(" · ")}
-                  </td>
-                </tr>
-              ))}
+              {botSignals.map((s) => {
+                const plan = signalPlan(s)
+                if (!plan) return null
+                return (
+                  <tr key={s.id} className="border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-elevated)]/50">
+                    <td className="px-4 py-3 text-[var(--color-text-muted)] whitespace-nowrap">{format(new Date(s.triggeredAt), "MMM d HH:mm")}</td>
+                    <td className="px-4 py-3">
+                      <span className="inline-flex h-6 items-center rounded-full px-3 text-xs font-bold text-white" style={{ background: SIGNAL_BG[s.signalType] }}>
+                        {plan.action}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 tabular-nums text-[var(--color-text-primary)]">{fmtPrice(plan.price)}</td>
+                    <td className="px-4 py-3 tabular-nums text-[var(--color-loss)]">{fmtPrice(plan.stopLoss)}</td>
+                    <td className="px-4 py-3 tabular-nums text-[var(--color-profit)]">{fmtPrice(plan.takeProfit)}</td>
+                    <td className="px-4 py-3">
+                      <span className={cn("text-xs font-medium", s.acted ? "text-[var(--color-profit)]" : "text-[var(--color-text-muted)]")}>
+                        {s.acted ? "Yes" : "No"}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
               {botSignals.length === 0 && (
-                <tr><td colSpan={4} className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]">No signals yet</td></tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]">No buy or sell signals yet</td></tr>
               )}
             </tbody>
           </table>
